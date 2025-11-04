@@ -35,6 +35,7 @@ public class MyCharacterController : MonoBehaviour
     public Transform rightHandPoint;
     public GameObject throwPrefab;
     public float throwSpeed = 12f;
+    private Throwable throwableItem;
 
     [Header("Aim Line")]
     public LineRenderer aimLine;
@@ -52,6 +53,13 @@ public class MyCharacterController : MonoBehaviour
     private Vector2 moveAxis;
     private bool jumpPressed, dashPressed;
     private bool leftHand, rightHand;
+
+    [Header("Climb")]
+    public float climbSpeedUp = 4f;       // 攀爬上下速度
+    public float climbSpeedSide = 3f;     // 攀爬左右速度
+    public bool isClimbing = false;       // 只读：是否处于攀爬
+    public Transform climbAnchor;         // 可选：吸附参考点
+    public MonoBehaviour climbSource;     // 触发攀爬的交互体
 
     //工具方法：用于启动/冻结角色移动
     public void SetControlLocked(bool locked)
@@ -78,6 +86,11 @@ public class MyCharacterController : MonoBehaviour
     {
         if (inventoryOpen)
             return;
+        if (ctx.performed && isClimbing)
+        {
+            ExitClimb();
+        }
+
         if (ctx.performed) jumpPressed = true; 
     }
     public void OnDash(InputAction.CallbackContext ctx) { if (ctx.performed) dashPressed = true; }
@@ -101,28 +114,53 @@ public class MyCharacterController : MonoBehaviour
 
         SetControlLocked(false);
     }
-    public void OnSpecial(InputAction.CallbackContext ctx) { }
+    public void OnSpecial(InputAction.CallbackContext ctx) 
+    {
+
+    }
     public void OnQuickNoteTap(InputAction.CallbackContext ctx) { }
     public void OnNoteHold(InputAction.CallbackContext ctx) { }
 
+    public void EnterClimb(Transform anchor, Vector2 upDir, Vector2 rightDir, MonoBehaviour source)
+    {
+        isClimbing = true;
+        climbAnchor = anchor;
+        climbSource = source;
+
+        rb.velocity = new Vector2(0f, 0f);
+    }
+
+    public void ExitClimb()
+    {
+        isClimbing = false;
+        climbAnchor = null;
+        climbSource = null;
+    }
 
     // 根据起点+方向+速度，实例化抛掷物并给初速度
     private void ThrowFromHand(Transform handPoint, Vector2 aimDir)
     {
-        if (throwPrefab == null || handPoint == null) return;
-
-        // 没有方向就默认向角色面朝方向
-        if (aimDir.sqrMagnitude < 0.0001f)
+        if (leftAiming)
         {
-            aimDir = new Vector2(faceDir, 0f);
+            throwableItem.transform.SetParent(null);
+            throwableItem.ThrowOut(aimDir);
         }
-
-        GameObject proj = Instantiate(throwPrefab, handPoint.position, Quaternion.identity);
-
-        var projRb = proj.GetComponent<Rigidbody2D>();
-        if (projRb != null)
         {
-            projRb.velocity = aimDir.normalized * throwSpeed;
+            if (throwPrefab == null || handPoint == null) return;
+
+            // 没有方向就默认向角色面朝方向
+            if (aimDir.sqrMagnitude < 0.0001f)
+            {
+                aimDir = new Vector2(faceDir, 0f);
+            }
+
+            GameObject proj = Instantiate(throwPrefab, handPoint.position, Quaternion.identity);
+
+            var projRb = proj.GetComponent<Rigidbody2D>();
+            if (projRb != null)
+            {
+                projRb.velocity = aimDir.normalized * throwSpeed;
+            }
         }
     }
 
@@ -191,7 +229,65 @@ public class MyCharacterController : MonoBehaviour
         isAiming = true;
         leftAiming = useLeftHand;
         rightAiming = !useLeftHand;
-
+        //判断能不能丢出东西
+        if (leftAiming)
+        {
+            if (leftHandPoint.childCount == 1)
+            {
+                GameObject itemObject = leftHandPoint.GetChild(0).gameObject;
+                if (itemObject.GetComponent<Throwable>())
+                {
+                    throwableItem = itemObject.GetComponent<Throwable>();
+                }
+                else
+                {
+                    Debug.Log("东西不能丢");
+                    isAiming = false;
+                    leftAiming = false;
+                    rightAiming = false;
+                    throwableItem = null;
+                    return;
+                }
+            }
+            else
+            {
+                Debug.Log("左手没东西丢");
+                isAiming = false;
+                leftAiming = false;
+                rightAiming = false;
+                throwableItem = null;
+                return;
+            }
+        }
+        if (!leftAiming)
+        {
+            if (rightHandPoint.childCount == 1)
+            {
+                GameObject itemObject = rightHandPoint.GetChild(0).gameObject;
+                if (itemObject.GetComponent<Throwable>())
+                {
+                    throwableItem = itemObject.GetComponent<Throwable>();
+                }
+                else
+                {
+                    Debug.Log("东西不能丢");
+                    isAiming = false;
+                    leftAiming = false;
+                    rightAiming = false;
+                    throwableItem = null;
+                    return;
+                }
+            }
+            else
+            {
+                Debug.Log("右手没东西丢");
+                isAiming = false;
+                leftAiming = false;
+                rightAiming = false;
+                throwableItem = null;
+                return;
+            }
+        }
         // 打开瞄准线
         if (aimLine != null)
         {
@@ -260,6 +356,15 @@ public class MyCharacterController : MonoBehaviour
 
     void Update()
     {
+        if (isClimbing)
+        {
+            if (Mathf.Abs(moveAxis.x) > 0.05f)
+            {
+                faceDir = Mathf.Sign(moveAxis.x);
+                transform.localScale = new Vector3(faceDir, 1f, 1f);
+            }
+            return;
+        }
         bool grounded = Physics2D.OverlapCircle(groundCheck.position, groundRadius, groundMask);
 
         if (grounded) lastGroundTime = coyoteTime;
@@ -290,7 +395,14 @@ public class MyCharacterController : MonoBehaviour
             if (dashTimer <= 0f) dashing = false;
             return;
         }
-
+        if (isClimbing)
+        {
+            // 关闭重力影响：直接写速度
+            float vx = moveAxis.x * climbSpeedSide;
+            float vy = moveAxis.y * climbSpeedUp;
+            rb.velocity = new Vector2(vx, vy);
+            return;
+        }
         float inputX = moveAxis.x;
         float target = inputX * moveSpeed;
         float diff = target - rb.velocity.x;

@@ -116,10 +116,12 @@ public class MyPlayerInput : MonoBehaviour
             {
                 throwLeft = map.AddAction("ThrowLeft", InputActionType.Button);
                 throwLeft.AddBinding("<Gamepad>/leftTrigger");
+                throwLeft.AddBinding("<Keyboard>/p");
                 throwLeft.started += ctx =>
                   {
                       if (!handBusy)
                       {
+                          Debug.Log("按下p");
                           handBusy = true;
                           controller.BeginAim(true);
                       }
@@ -136,6 +138,7 @@ public class MyPlayerInput : MonoBehaviour
                  };
                 throwLeft.canceled += ctx =>
                  {
+                     Debug.Log("左手丢出");
                      controller.ReleaseAim(ctx);
                      handBusy = false;
                  };
