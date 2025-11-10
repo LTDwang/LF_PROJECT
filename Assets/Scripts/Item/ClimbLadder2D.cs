@@ -1,233 +1,59 @@
 ﻿using UnityEngine;
-using UnityEngine.InputSystem;
 
-[RequireComponent(typeof(Rigidbody2D))]
-[RequireComponent(typeof(MovementController))]
-[RequireComponent(typeof(ClimbController))]
-[RequireComponent(typeof(GroundChecker))]
-public class ClimbLadder2D : MonoBehaviour
+public class ClimbLadder2D : MonoBehaviour, IInteractable
 {
-    private bool controlLocked = false;
-
-    [Header("Inventory")]
-    public GameObject inventoryUI;
-
-    [Header("Components")]
-    private MovementController movementController;
-    private ClimbController climbController;
-    private ThrowController throwController;
-    private InputHandler inputHandler;
-    private GroundChecker groundChecker;
-
-    private bool inventoryOpen = false;
-
-    private void Awake()
+    [Header("Climb Enter")]
+    public Transform snapAnchor;            // 吸附参考点（放在梯子中线胸口高）
+    [SerializeField] private string prompt = "按 E 拾取";
+    public int priority = 5;
+    InteractableTrigger trigger;
+    private void OnEnable()
     {
-        movementController = GetComponent<MovementController>();
-        climbController = GetComponent<ClimbController>();
-        throwController = GetComponent<ThrowController>();
-        groundChecker = GetComponent<GroundChecker>();
-        
-        inputHandler = GetComponent<InputHandler>();
-        if (inputHandler == null)
+        trigger = GetComponentInChildren<InteractableTrigger>();
+        if (trigger)
         {
-            inputHandler = gameObject.AddComponent<InputHandler>();
+            trigger.enabled = true;
         }
 
-        if (throwController != null)
+    }
+    private void OnDisable()
+    {
+        trigger = GetComponentInChildren<InteractableTrigger>();
+        if (trigger)
         {
-            throwController.FaceDir = movementController.FaceDir;
+            trigger.enabled = false;
         }
     }
-
-    private void Update()
+    private Transform _player;
+    public string Prompt => prompt;
+    public void SetPlayer(Transform player) => _player = player;
+    public void ClearPlayer(Transform player) { if (_player == player) _player = null; }
+    //之后把这个的引用都删了
+    public bool CanInteract(Transform player)
     {
-        if (controlLocked || inventoryOpen)
-        {
-            inputHandler?.ClearMoveInput();
-            return;
-        }
-
-        // 更新移动控制器
-        if (movementController != null && !climbController.IsClimbing)
-        {
-            movementController.UpdateMovement(Time.deltaTime);
-        }
-
-        // 更新攀爬控制器
-        if (climbController.IsClimbing)
-        {
-            climbController.UpdateClimb(inputHandler.MoveAxis, movementController.FaceDir);
-        }
-
-        // 更新投掷控制器面向方向
-        if (throwController != null)
-        {
-            throwController.FaceDir = movementController.FaceDir;
-        }
-
-        // 重置单次触发输入
-        inputHandler?.ResetFrameInputs();
+        return true;
     }
-
-    private void FixedUpdate()
+    public void Interact(Transform player)
     {
-        if (controlLocked || inventoryOpen)
+        var ctrl = player.GetComponent<MyCharacterController>();
+        if (ctrl == null) return;
+        if (!ctrl.isClimbing)
         {
-            return;
+            var anchor = snapAnchor ? snapAnchor : null;
+            ctrl.EnterClimb(anchor, Vector2.up, Vector2.right, this);
         }
-
-        // 攀爬状态
-        if (climbController.IsClimbing)
+        else
         {
-            climbController.FixedUpdateClimb(inputHandler.MoveAxis);
-            return;
-        }
-
-        // 正常移动状态
-        if (movementController != null)
-        {
-            // 处理输入
-            if (inputHandler.JumpPressed)
-            {
-                movementController.TryJump();
-            }
-
-            if (inputHandler.DashPressed)
-            {
-                movementController.TryDash();
-            }
-
-            movementController.SetJumpHeld(inputHandler.JumpHeld);
-            movementController.FixedUpdateMovement(inputHandler.MoveAxis);
+            if (ctrl.climbSource == (MonoBehaviour)this)
+                ctrl.ExitClimb();
         }
     }
-
-    // ========== 输入回调方法 ==========
-    public void OnMove(InputAction.CallbackContext ctx)
+    private void OnTriggerExit2D(Collider2D player)
     {
-        if (inventoryOpen)
+        var ctrl = player.GetComponent<MyCharacterController>();
+        if (ctrl && ctrl.isClimbing && ctrl.climbSource == (MonoBehaviour)this)
         {
-            inputHandler?.ClearMoveInput();
-            return;
-        }
-        inputHandler?.OnMove(ctx);
-    }
-
-    public void OnJump(InputAction.CallbackContext ctx)
-    {
-        if (inventoryOpen) return;
-
-        // 攀爬状态下跳跃退出攀爬
-        if (ctx.performed && climbController.IsClimbing)
-        {
-            climbController.ExitClimb();
-        }
-
-        inputHandler?.OnJump(ctx);
-    }
-
-    public void OnDash(InputAction.CallbackContext ctx)
-    {
-        if (inventoryOpen) return;
-        inputHandler?.OnDash(ctx);
-    }
-
-    public void OnUseLeftHand(InputAction.CallbackContext ctx)
-    {
-        inputHandler?.OnUseLeftHand(ctx);
-    }
-
-    public void OnUseRightHand(InputAction.CallbackContext ctx)
-    {
-        inputHandler?.OnUseRightHand(ctx);
-    }
-
-    public void OnOpenInventory(InputAction.CallbackContext ctx)
-    {
-        inventoryOpen = true;
-        if (inventoryUI != null)
-        {
-            inventoryUI.SetActive(true);
-        }
-        SetControlLocked(true);
-    }
-
-    public void OnCloseInventory(InputAction.CallbackContext ctx)
-    {
-        inventoryOpen = false;
-        if (inventoryUI != null)
-        {
-            inventoryUI.SetActive(false);
-        }
-        SetControlLocked(false);
-    }
-
-    public void OnSpecial(InputAction.CallbackContext ctx) { }
-
-    public void OnQuickNoteTap(InputAction.CallbackContext ctx) { }
-
-    public void OnNoteHold(InputAction.CallbackContext ctx) { }
-
-    // ========== 投掷相关 ==========
-    public void BeginAim(bool useLeftHand)
-    {
-        if (throwController != null)
-        {
-            throwController.BeginAim(useLeftHand);
+            ctrl.ExitClimb();
         }
     }
-
-    public void UpdateAimDirection(Vector2 dirFromStick)
-    {
-        if (throwController != null)
-        {
-            throwController.UpdateAimDirection(dirFromStick);
-        }
-    }
-
-    public void ReleaseAim(InputAction.CallbackContext ctx)
-    {
-        if (throwController != null)
-        {
-            throwController.ReleaseAim();
-        }
-    }
-
-    // ========== 攀爬相关 ==========
-    public void EnterClimb(Transform anchor, Vector2 upDir, Vector2 rightDir, MonoBehaviour source)
-    {
-        if (climbController != null)
-        {
-            climbController.EnterClimb(anchor, upDir, rightDir, source);
-        }
-    }
-
-    public void ExitClimb()
-    {
-        if (climbController != null)
-        {
-            climbController.ExitClimb();
-        }
-    }
-
-    // ========== 控制锁定 ==========
-    public void SetControlLocked(bool locked)
-    {
-        controlLocked = locked;
-
-        if (locked)
-        {
-            if (movementController != null)
-            {
-                movementController.StopHorizontalMovement();
-            }
-            inputHandler?.ClearMoveInput();
-        }
-    }
-
-    // ========== 属性访问 ==========
-    public bool IsClimbing => climbController != null && climbController.IsClimbing;
-    public bool IsDashing => movementController != null && movementController.IsDashing;
-    public bool IsAiming => throwController != null && throwController.IsAiming;
 }
