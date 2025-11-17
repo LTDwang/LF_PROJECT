@@ -40,6 +40,40 @@ public class InventoryGridView : MonoBehaviour
     public Color previewBadColor = new Color(1f, 0f, 0f, 0.35f); // 红色半透明
 
     public ItemSO testItem;
+    public bool IsDraggingItem => draggingItem != null;
+
+    // 返回正在拖的物品类型（ItemSO）
+    public ItemSO GetDraggingItemSO()
+    {
+        return draggingItem != null ? draggingItem.item : null;
+    }
+
+    // 从当前正在拖拽的物品里“拿走 1 个”给外部系统（比如制作材料格）
+    // 会同步更新背包数据和 UI，并结束拖拽。
+    // 返回 true 表示成功拿到 1 个；false 表示当前没在拖东西。
+    public bool ConsumeOneFromDraggingForExternal()
+    {
+        if (draggingItem == null) return false;
+
+        // 减少数量
+        draggingItem.count -= 1;
+
+        // 数量用完：从背包里删除这个物品实例
+        if (draggingItem.count <= 0)
+        {
+            inventoryGrid.RemoveItem(draggingItem); // 如果你还没有这个函数，下面我会给一个实现
+            StopDrag();                             // 恢复原格子图标、销毁跟随图标
+        }
+        else
+        {
+            // 还有剩余：结束拖拽，让原格子显示新的数量
+            StopDrag();
+        }
+
+        // 重绘背包中所有物品图标
+        RefreshAllItems();
+        return true;
+    }
     private void Awake()
     {
         layout = cellsRoot.GetComponent<GridLayoutGroup>();
