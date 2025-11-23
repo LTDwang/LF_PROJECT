@@ -29,7 +29,7 @@ MonoBehaviour:
   fallGravityScale: 3
   earlyReleaseGravityScale: 5
   maxFallSpeed: -30
-  rayDistance: 0.24
+  rayDistance: 0.2
   groundLayerNames:
   - Ground
   rayCount: 3

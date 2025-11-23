@@ -215,10 +215,10 @@ public class GroundChecker : MonoBehaviour
         foreach (Vector2 rayOrigin in rayOrigins)
         {
             Vector3 start = rayOrigin;
-            Vector3 end = start + Vector3.down * rayDistance;
+        Vector3 end = start + Vector3.down * rayDistance;
             
             // 绘制射线
-            Gizmos.DrawLine(start, end);
+        Gizmos.DrawLine(start, end);
             
             // 绘制射线起点的标记（小圆点）
             Gizmos.color = Color.cyan;
@@ -226,9 +226,9 @@ public class GroundChecker : MonoBehaviour
             
             // 绘制射线终点的标记
             Gizmos.color = Color.yellow;
-            const float lineWidth = 0.02f;
-            Gizmos.DrawLine(end, end + Vector3.left * lineWidth);
-            Gizmos.DrawLine(end, end + Vector3.right * lineWidth);
+        const float lineWidth = 0.02f;
+        Gizmos.DrawLine(end, end + Vector3.left * lineWidth);
+        Gizmos.DrawLine(end, end + Vector3.right * lineWidth);
         }
         
         // 如果有碰撞盒，绘制碰撞盒底部位置标记

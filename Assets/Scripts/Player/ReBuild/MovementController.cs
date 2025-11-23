@@ -261,13 +261,13 @@ public class MovementController : MonoBehaviour
         // 处理垂直移动（跳跃和重力）
         UpdateVerticalMovement(deltaTime);
         float displacementY = currentVerticalVelocity * deltaTime;
-        
+
         // 应用位移
         transform.position += new Vector3(displacementX, displacementY, 0f);
         
         // 确保 Rigidbody2D 的 velocity 被清零，防止物理系统干扰
         if (rb != null)
-        {
+            {
             rb.velocity = Vector2.zero;
         }
 
@@ -360,7 +360,7 @@ public class MovementController : MonoBehaviour
     /// 更新跳跃逻辑：处理跳跃键按住和松开的状态
     /// </summary>
     private void UpdateJumpLogic(float deltaTime)
-    {
+        {
         // 提前松开跳跃键（不在按住状态但时间还没结束）- 优先检查
         if (!jumpHeld && jumpHoldTimer > 0f)
         {

@@ -13,6 +13,7 @@ public class ClimbController : MonoBehaviour
     private MonoBehaviour climbSource;
 
     public bool IsClimbing => isClimbing;
+    public MonoBehaviour ClimbSource => climbSource;
 
     private void Awake()
     {

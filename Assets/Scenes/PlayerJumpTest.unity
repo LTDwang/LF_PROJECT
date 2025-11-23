@@ -167,7 +167,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8079f4f9a6de04c45a8fdd6d59420007, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerTag: Player
 --- !u!58 &417974070
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -384,7 +383,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8079f4f9a6de04c45a8fdd6d59420007, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerTag: Player
 --- !u!61 &481794310
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -566,14 +564,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 531102634}
-  - component: {fileID: 531102640}
   - component: {fileID: 531102633}
   - component: {fileID: 531102635}
   - component: {fileID: 531102639}
-  - component: {fileID: 531102638}
-  - component: {fileID: 531102637}
-  - component: {fileID: 531102636}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: "\u68AF\u5B50"
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -694,69 +688,6 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
---- !u!114 &531102636
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 531102631}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 44fecdcd132af1d44baaf23c74d1e9dd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  rayDistance: 0.25
-  groundLayerNames:
-  - Ground
-  rayCount: 3
-  displayIsGrounded: 0
-  displayColliderHeight: 0
---- !u!114 &531102637
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 531102631}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 368423e78c331e64aad293074d598f50, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  climbSpeedUp: 4
-  climbSpeedSide: 3
---- !u!114 &531102638
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 531102631}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7c2d6b2e464ae634ba2c595401b70e3d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  moveSpeed: 8
-  accel: 60
-  decel: 80
-  crouchMoveSpeed: 4
-  crouchAccel: 30
-  crouchDecel: 40
-  dashSpeed: 16
-  dashAccel: 200
-  dashTime: 0.15
-  dashCooldown: 0.4
-  jumpVelocity: 12
-  coyoteTime: 0.1
-  jumpBuffer: 0.1
-  jumpHoldTime: 0.2
-  fallGravityScale: 2.2
-  earlyReleaseGravityScale: 2.8
-  maxFallSpeed: -30
-  displayHorizontalVelocity: 0
-  displayVerticalVelocity: 0
 --- !u!50 &531102639
 Rigidbody2D:
   serializedVersion: 4
@@ -784,23 +715,6 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
---- !u!114 &531102640
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 531102631}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 107ab2a4f475adb4f93b84690d4f56e6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  snapAnchor: {fileID: 0}
-  prompt: "\u6309 E \u62FE\u53D6"
-  priority: 5
-  trigger: {fileID: 0}
-  _player: {fileID: 0}
 --- !u!1 &714896655
 GameObject:
   m_ObjectHideFlags: 0
@@ -978,9 +892,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: be41dbeb7e3eaf14bb0a76abe6b17635, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  prompt: "\u6309 E \u62FE\u53D6"
-  trigger: {fileID: 0}
-  _player: {fileID: 0}
 --- !u!1 &808017632
 GameObject:
   m_ObjectHideFlags: 0
@@ -1305,7 +1216,7 @@ MonoBehaviour:
   - Ground
   rayCount: 3
   displayIsGrounded: 0
-  displayColliderHeight: 2
+  displayColliderHeight: 1.7257851
 --- !u!114 &896699256
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1383,7 +1294,7 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: -0.014432311, y: 0.021648586}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -1394,7 +1305,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1, y: 2}
+  m_Size: {x: 0.7690823, y: 1.7257851}
   m_EdgeRadius: 0.17
 --- !u!1 &1005067712
 GameObject:
