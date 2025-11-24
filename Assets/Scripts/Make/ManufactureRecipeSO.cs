@@ -15,8 +15,8 @@ public class ManufactureRecipeSO : ScriptableObject
     public ItemSO requiredTool;
 
     [Header("材料格子图案（位置有要求）")]
-    [Range(1, 3)] public int width = 2;   // 材料区横向格子数
-    [Range(1, 3)] public int height = 2;  // 材料区纵向格子数
+    [Range(1, 3)] public int width = 2;   // 配方占用格子宽（最多 3）
+    [Range(1, 3)] public int height = 2;  // 配方占用格子高（最多 3）
 
     // 长度 >= width * height，按行存：index = y * width + x
     [Tooltip("按行从上到下，从左到右：index = y * width + x")]

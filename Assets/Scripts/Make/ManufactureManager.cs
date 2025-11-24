@@ -10,15 +10,29 @@ public class ManufactureManager : MonoBehaviour
     public ManufactureGrid materialGrid;
     public InventoryGrid playerInventory;
 
-    [Header("当前放入的容器 / 工具")]
+    [Header("当前容器 / 工具（UI 改这两个就行）")]
     public ItemSO currentContainer;
     public ItemSO currentTool;
 
-    // ========== 供 UI 调用：放/取容器、工具 ==========
+    // 给 UI 用：需要刷新预览时回调
+    public System.Action RefreshPreviewRequested;
+
+    private void Awake()
+    {
+        if (materialGrid != null)
+        {
+            materialGrid.OnChanged += () =>
+            {
+                RefreshPreviewRequested?.Invoke();
+            };
+        }
+    }
+
+    // ====== 容器 / 工具接口 ======
+
     public void SetContainer(ItemSO container)
     {
         currentContainer = container;
-        // 容器变化后，材料格大小后续可以在这里调整（当前版本先不改 grid 尺寸）
         RefreshPreviewRequested?.Invoke();
     }
 
@@ -40,22 +54,8 @@ public class ManufactureManager : MonoBehaviour
         RefreshPreviewRequested?.Invoke();
     }
 
-    // 给 UI 用：当需要刷新预览时回调
-    public System.Action RefreshPreviewRequested;
+    // ====== 1. 找匹配配方 ======
 
-    private void Awake()
-    {
-        if (materialGrid != null)
-        {
-            // 材料变化时也刷新预览
-            materialGrid.OnChanged += () =>
-            {
-                RefreshPreviewRequested?.Invoke();
-            };
-        }
-    }
-
-    // ========== 1. 找到当前匹配的配方 ==========
     public ManufactureRecipeSO FindMatchingRecipe()
     {
         if (materialGrid == null) return null;
@@ -73,28 +73,26 @@ public class ManufactureManager : MonoBehaviour
 
     private bool IsRecipeMatch(ManufactureRecipeSO recipe)
     {
-        // 1) 检查容器
+        // 1) 容器
         if (recipe.requiredContainer != null &&
             recipe.requiredContainer != currentContainer)
             return false;
 
-        // 2) 检查工具
+        // 2) 工具
         if (recipe.requiredTool != null &&
             recipe.requiredTool != currentTool)
             return false;
 
-        // 3) 滑动匹配材料图案
+        // 3) 材料图案（允许在材料区里滑动）
         int rw = recipe.width;
         int rh = recipe.height;
 
         int gw = materialGrid.width;
         int gh = materialGrid.height;
 
-        // 如果配方比材料格还大，肯定不行
         if (rw > gw || rh > gh)
             return false;
 
-        // 尝试所有可能的偏移位置
         for (int offsetY = 0; offsetY <= gh - rh; offsetY++)
         {
             for (int offsetX = 0; offsetX <= gw - rw; offsetX++)
@@ -110,7 +108,6 @@ public class ManufactureManager : MonoBehaviour
         return false;
     }
 
-    // 在给定偏移 (offsetX, offsetY) 处检查配方区域是否完全匹配
     private bool PatternMatchesAtOffset(ManufactureRecipeSO recipe, int offsetX, int offsetY)
     {
         int rw = recipe.width;
@@ -121,8 +118,9 @@ public class ManufactureManager : MonoBehaviour
             for (int x = 0; x < rw; x++)
             {
                 ItemSO need = recipe.GetRequiredItem(x, y);
-                InventoryItem inventoryItem = materialGrid.GetItemAt(offsetX + x, offsetY + y);
-                ItemSO have = inventoryItem?.item; // 从 InventoryItem 获取 ItemSO
+
+                var inst = materialGrid.GetItemAt(offsetX + x, offsetY + y);
+                ItemSO have = inst != null ? inst.item : null;
 
                 if (need == null && have == null) continue;
                 if (need == null && have != null) return false;
@@ -153,18 +151,17 @@ public class ManufactureManager : MonoBehaviour
 
                 if (insidePattern) continue;
 
-                InventoryItem inventoryItem = materialGrid.GetItemAt(x, y);
-                ItemSO have = inventoryItem?.item; // 从 InventoryItem 获取 ItemSO
-                if (have != null)
-                    return false; // 图案外不能有额外材料
+                var inst = materialGrid.GetItemAt(x, y);
+                if (inst != null)
+                    return false;
             }
         }
 
         return true;
     }
 
+    // ====== 2. 预览结果 ======
 
-    // ========== 2. 给 UI 用的预览结果 ==========
     [System.Serializable]
     public struct ManufacturePreview
     {
@@ -187,7 +184,8 @@ public class ManufactureManager : MonoBehaviour
         };
     }
 
-    // ========== 3. 真正执行一次合成 ==========
+    // ====== 3. 执行合成 ======
+
     public bool CraftIfPossible()
     {
         if (materialGrid == null || playerInventory == null)
@@ -211,7 +209,7 @@ public class ManufactureManager : MonoBehaviour
             return false;
         }
 
-        // 消耗材料（当前简化为每格 1 个，后面想做数量再扩展）
+        // 消耗材料
         ConsumeMaterials(recipe);
 
         // 刷新预览
@@ -225,11 +223,20 @@ public class ManufactureManager : MonoBehaviour
     {
         if (item == null || count <= 0) return false;
 
-
-        // 多格物品：简单起见，先尝试放在 (0,0)
-        var inst = playerInventory.PlaceNewItem(item, count, 0, 0, false);
+        /*// 1x1 且可堆叠：用背包里的堆叠接口
+        if (item.gridWidth == 1 && item.gridHeight == 1 && item.maxStack > 1)
+        {
+            int left = playerInventory.TryAddStackable(item, count);
+            return left == 0;
+        }
+        else
+        {
+            // 多格物品：简单起见，先尝试放在 (0,0)
+            var inst = playerInventory.PlaceNewItem(item, count, 0, 0, false);
+            return inst != null;
+        }*/
+        var inst = playerInventory.PlaceNewItem(item, count, 3, 3, false);
         return inst != null;
-        
     }
 
     private void ConsumeMaterials(ManufactureRecipeSO recipe)
@@ -237,14 +244,13 @@ public class ManufactureManager : MonoBehaviour
         int rw = recipe.width;
         int rh = recipe.height;
 
-        // 需要找到匹配的配方位置（与 FindMatchingRecipe 中的逻辑一致）
-        // 这里简化处理：假设配方从 (0,0) 开始，实际应该使用匹配时的偏移量
-        // 为了正确实现，应该保存匹配时的偏移量，或者重新查找匹配位置
-        
-        // 临时方案：遍历所有可能的偏移位置，找到匹配的位置后消耗材料
         int gw = materialGrid.width;
         int gh = materialGrid.height;
-        
+
+        // 先找到匹配的偏移
+        int matchOffsetX = -1;
+        int matchOffsetY = -1;
+
         for (int offsetY = 0; offsetY <= gh - rh; offsetY++)
         {
             for (int offsetX = 0; offsetX <= gw - rw; offsetX++)
@@ -252,20 +258,34 @@ public class ManufactureManager : MonoBehaviour
                 if (PatternMatchesAtOffset(recipe, offsetX, offsetY) &&
                     OtherCellsEmptyOutsidePattern(recipe, offsetX, offsetY))
                 {
-                    // 找到匹配位置，消耗材料
-                    for (int y = 0; y < rh; y++)
-                    {
-                        for (int x = 0; x < rw; x++)
-                        {
-                            ItemSO need = recipe.GetRequiredItem(x, y);
-                            if (need != null)
-                            {
-                                // 删除该位置的物品（会删除整个 InventoryItem）
-                                materialGrid.RemoveItemAtCell(offsetX + x, offsetY + y);
-                            }
-                        }
-                    }
-                    return; // 只消耗一次
+                    matchOffsetX = offsetX;
+                    matchOffsetY = offsetY;
+                    break;
+                }
+            }
+
+            if (matchOffsetX != -1) break;
+        }
+
+        if (matchOffsetX == -1)
+            return;
+
+        var removed = new HashSet<InventoryItem>();
+
+        for (int y = 0; y < rh; y++)
+        {
+            for (int x = 0; x < rw; x++)
+            {
+                ItemSO need = recipe.GetRequiredItem(x, y);
+                if (need == null) continue;
+
+                var inst = materialGrid.GetItemAt(matchOffsetX + x, matchOffsetY + y);
+                if (inst == null) continue;
+
+                if (!removed.Contains(inst))
+                {
+                    materialGrid.RemoveItem(inst);
+                    removed.Add(inst);
                 }
             }
         }

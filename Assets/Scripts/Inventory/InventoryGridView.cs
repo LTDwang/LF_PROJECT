@@ -41,6 +41,7 @@ public class InventoryGridView : MonoBehaviour
 
     public ItemSO testItem;
     public bool IsDraggingItem => draggingItem != null;
+    public bool DraggingItemRotated => draggingItem != null && draggingItem.rotated;
 
     // 返回正在拖的物品类型（ItemSO）
     public ItemSO GetDraggingItemSO()
@@ -163,7 +164,6 @@ public class InventoryGridView : MonoBehaviour
             for (int x = 0; x < w; x++)
             {
                 var cell =cellUIs[x, y] ;
-                Debug.Log(itemsRoot.InverseTransformPoint(cell.GetComponent<RectTransform>().TransformPoint(cell.GetComponent<RectTransform>().rect.center)));
             }
         }
     }
