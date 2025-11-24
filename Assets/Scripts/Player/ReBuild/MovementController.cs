@@ -182,7 +182,7 @@ public class MovementController : MonoBehaviour
 
     public void FixedUpdateMovement(Vector2 moveInput)
     {
-        float deltaTime = Time.fixedDeltaTime;
+        float deltaTime = GameManager.ScaledFixedDeltaTime;
         float inputX = moveInput.x;
 
         // 更新显示的速度值（用于Inspector显示）

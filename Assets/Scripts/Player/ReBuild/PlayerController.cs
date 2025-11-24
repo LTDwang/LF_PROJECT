@@ -119,7 +119,7 @@ public class PlayerController : MonoBehaviour
         // 常规移动：非攀爬状态下由MovementController更新
         if (movementController != null && !climbController.IsClimbing)
         {
-            movementController.UpdateMovement(Time.deltaTime);
+            movementController.UpdateMovement(GameManager.ScaledDeltaTime);
         }
 
         // 攀爬状态：交给ClimbController处理

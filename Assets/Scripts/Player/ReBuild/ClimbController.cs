@@ -50,8 +50,9 @@ public class ClimbController : MonoBehaviour
     {
         if (!isClimbing) return;
 
-        float vx = moveInput.x * climbSpeedSide;
-        float vy = moveInput.y * climbSpeedUp;
+        float timeScale = GameManager.Instance != null ? GameManager.Instance.gameTimeScale : 1.0f;
+        float vx = moveInput.x * climbSpeedSide * timeScale;
+        float vy = moveInput.y * climbSpeedUp * timeScale;
         rb.velocity = new Vector2(vx, vy);
     }
 }

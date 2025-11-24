@@ -22,7 +22,7 @@ MonoBehaviour:
   dashAccel: 200
   dashTime: 0.15
   dashCooldown: 0.4
-  jumpVelocity: 13
+  jumpVelocity: 10
   coyoteTime: 0.2
   jumpBuffer: 0.1
   jumpHoldTime: 0.2
