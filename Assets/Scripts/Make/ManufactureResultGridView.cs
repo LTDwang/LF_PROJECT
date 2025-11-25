@@ -67,6 +67,7 @@ public class ManufactureResultGridView : MonoBehaviour
     // 刷新结果预览：按照物品自身占格大小画一块大图标
     public void RefreshPreview()
     {
+        Debug.Log("开始生成大结果图");
         if (manager == null || itemsRoot == null || layout == null || cellRTs == null)
             return;
 

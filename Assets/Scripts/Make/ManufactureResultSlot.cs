@@ -34,8 +34,8 @@ public class ManufactureResultSlot : MonoBehaviour
 
     private void Start()
     {
-        if (manager != null)
-            manager.RefreshPreviewRequested += RefreshPreview;
+        //if (manager != null)
+            //manager.RefreshPreviewRequested += RefreshPreview;
     }
 
     public void RefreshPreview()

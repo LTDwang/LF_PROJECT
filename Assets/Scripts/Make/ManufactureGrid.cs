@@ -72,7 +72,7 @@ public class ManufactureGrid : MonoBehaviour
     {
         if (inst == null) return;
         int w = inst.Width;
-        int h = Height;
+        int h = inst.Height;
 
         for (int ix = 0; ix < w; ix++)
         {

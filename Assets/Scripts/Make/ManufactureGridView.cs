@@ -56,67 +56,7 @@ public class ManufactureGridView : MonoBehaviour
         if (materialGrid != null)
             materialGrid.OnChanged -= RefreshAllItems;
     }
-
-    private void StartDrag(InventoryItem inst)
-    {
-
-        draggingItem = inst;
-
-        // 1) 原位置那个图标删掉
-        originIconForDrag = null;
-        if (itemIcons.TryGetValue(inst, out RectTransform originIconRT))
-        {
-            originIconForDrag = originIconRT;
-            originIconForDrag.gameObject.SetActive(false);
-        }
-
-        // 2) 清掉旧的拖拽图标
-        if (draggingIcon != null)
-        {
-            Destroy(draggingIcon.gameObject);
-            draggingIcon = null;
-        }
-
-        // 3) 创建跟随鼠标的图标
-        GameObject go = Instantiate(itemIconPrefab, itemsRoot);
-        draggingIcon = go.GetComponent<RectTransform>();
-
-        var img = go.GetComponent<Image>();
-        if (img != null)
-        {
-            img.sprite = inst.item.icon;
-            img.raycastTarget = false;  // 不挡点击
-        }
-
-        var text = go.GetComponentInChildren<TextMeshProUGUI>();
-        if (text != null)
-        {
-            text.text = inst.count > 1 ? inst.count.ToString() : "";
-            text.raycastTarget = false;
-        }
-
-        // 4) 设置拖拽图标尺寸（和占用格子一致）
-        Vector2 cellSize = layout.cellSize;
-        Vector2 spacing = layout.spacing;
-
-        int w = inst.Width;
-        int h = inst.Height;
-
-        float width = cellSize.x * w + spacing.x * (w - 1);
-        float height = cellSize.y * h + spacing.y * (h - 1);
-        draggingIcon.sizeDelta = new Vector2(width, height);
-
-        // 初始位置放在鼠标下
-        Vector2 localPos;
-        RectTransformUtility.ScreenPointToLocalPointInRectangle(
-            itemsRoot,
-            Input.mousePosition,
-            rootCanvas.renderMode == RenderMode.ScreenSpaceOverlay ? null : rootCanvas.worldCamera,
-            out localPos
-        );
-        draggingIcon.anchoredPosition = localPos;
-    }
-    // ========= 生成 3×3 格子 =========
+    // ========= 生成材料格子 =========
     private void BuildCells()
     {
         int w = materialGrid.Width;
@@ -187,7 +127,8 @@ public class ManufactureGridView : MonoBehaviour
 
         float width = cellSize.x * w + spacing.x * (w - 1);
         float height = cellSize.y * h + spacing.y * (h - 1);
-        rt.sizeDelta = new Vector2(width, height);
+        rt.sizeDelta = inst.rotated ? new Vector2(height, width) : new Vector2(width, height);
+        rt.rotation = inst.rotated ? Quaternion.Euler(0f, 0f, 90f) : Quaternion.Euler(0f, 0f, 0f);
 
         // ===== 2. 位置：用左上格和右下格的世界坐标算中心 =====
         ManufactureCellUI cellLT = cellUIs[inst.originX, inst.originY];
