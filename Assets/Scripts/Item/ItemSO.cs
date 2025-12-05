@@ -5,6 +5,7 @@ public enum ItemType
     Food,
     Material,
     Tool,
+    Container,
     Other//有其他需要之后再改
 }
 [CreateAssetMenu(
@@ -70,4 +71,8 @@ public class ItemSO : ScriptableObject
     [Tooltip("若不直接消失，则损坏时变成的物品，例如：破碎工具、废铁")]
     public ItemSO brokenResultItem;
 
+    //================= 若是容器 ===============
+    [Header("容器大小（是制作界面的容器）")]
+    [Min(1)] public int containerWidth = 1;
+    [Min(1)] public int containerHeight = 1;
 }

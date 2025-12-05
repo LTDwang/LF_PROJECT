@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class ManufactureGrid : MonoBehaviour
 {
-    [Header("材料区尺寸")]
+    [Header("材料区尺寸(最大)")]
     public int width = 3;
     public int height = 3;
 
@@ -15,9 +15,9 @@ public class ManufactureGrid : MonoBehaviour
 
     public System.Action OnChanged;
 
-    private void Awake()
+    private void OnEnable()
     {
-        cells = new InventoryItem[width, height];
+        cells = new InventoryItem[3, 3];
     }
 
     private bool InBounds(int x, int y)

@@ -44,7 +44,7 @@ public class ManufactureGridView : MonoBehaviour
             Debug.LogError("ManufactureGridView: materialGrid 未设置");
             return;
         }
-
+        manager.RefreshContainer += BuildCells;
         BuildCells();
         RefreshAllItems();
 
@@ -57,7 +57,7 @@ public class ManufactureGridView : MonoBehaviour
             materialGrid.OnChanged -= RefreshAllItems;
     }
     // ========= 生成材料格子 =========
-    private void BuildCells()
+    public void BuildCells()
     {
         int w = materialGrid.Width;
         int h = materialGrid.Height;

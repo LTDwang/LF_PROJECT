@@ -16,11 +16,12 @@ public class ManufactureResultView : MonoBehaviour
 
     private GridLayoutGroup layout;
     private RectTransform[,] cellRTs;       // 记录生成的格子，给图标定位用
-
+    public Button manufactureButton;
     private void Awake()
     {
         if (cellsRoot != null)
             layout = cellsRoot.GetComponent<GridLayoutGroup>();
+        //manufactureButton.onClick.AddListener(OnPointerClick);
     }
 
     private void OnEnable()
@@ -98,7 +99,7 @@ public class ManufactureResultView : MonoBehaviour
             {
                 GameObject go = Instantiate(cellPrefab, cellsRoot);
                 Button button = go.GetComponent<Button>();
-                button.onClick.AddListener(OnPointerClick);
+                //button.onClick.AddListener(OnPointerClick);
                 RectTransform rt = go.GetComponent<RectTransform>();
                 cellRTs[ix, iy] = rt;
             }

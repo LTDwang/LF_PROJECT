@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class ManufactureManager : MonoBehaviour
@@ -14,13 +15,17 @@ public class ManufactureManager : MonoBehaviour
     public ItemSO currentContainer;
     public ItemSO currentTool;
 
+    public ItemSO defaultContainer;
     // 给 UI 用：需要刷新预览时回调
     public System.Action RefreshPreviewRequested;
-
+    public Action RefreshContainer;
     private void Awake()
     {
+        currentContainer = defaultContainer;
         if (materialGrid != null)
         {
+            materialGrid.width = currentContainer.containerWidth;
+            materialGrid.height = currentContainer.containerHeight;
             materialGrid.OnChanged += () =>
             {
                 RefreshPreviewRequested?.Invoke();
@@ -28,11 +33,19 @@ public class ManufactureManager : MonoBehaviour
         }
     }
 
+    private void OnDisable()
+    {
+        SetContainer(defaultContainer);
+    }
+
     // ====== 容器 / 工具接口 ======
 
     public void SetContainer(ItemSO container)
     {
         currentContainer = container;
+        materialGrid.width = currentContainer.containerWidth;
+        materialGrid.height = currentContainer.containerHeight;
+        RefreshContainer?.Invoke();
         RefreshPreviewRequested?.Invoke();
     }
 
@@ -45,6 +58,7 @@ public class ManufactureManager : MonoBehaviour
     public void SetTool(ItemSO tool)
     {
         currentTool = tool;
+
         RefreshPreviewRequested?.Invoke();
     }
 
