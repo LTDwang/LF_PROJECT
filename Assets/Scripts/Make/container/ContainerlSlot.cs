@@ -40,6 +40,7 @@ public class ContainerSlot: MonoBehaviour, IPointerClickHandler
 
     public void OnPointerClick(PointerEventData eventData)
     {
+        Debug.Log("点一下");
         if (inventoryView != null && inventoryView.IsDraggingItem)// 正在从背包拖一个物品过来
         {
             ItemSO so = inventoryView.GetDraggingItemSO();
@@ -47,7 +48,7 @@ public class ContainerSlot: MonoBehaviour, IPointerClickHandler
                 return;
 
             // 如果已经有容器，就放不进去
-            if (equippedItem != null && playerInventory != null)
+            if (manager.currentContainer != manager.defaultContainer && playerInventory != null)
             {
                 
                 Debug.Log("已经装备了容器了");
@@ -63,14 +64,14 @@ public class ContainerSlot: MonoBehaviour, IPointerClickHandler
         else
         {
             // 没有拖东西，点击容器格：如果有容器就尝试放回背包
-            if (equippedItem != null && playerInventory != null)
+            if (manager.currentContainer != manager.defaultContainer && playerInventory != null)
             {
-                /*bool backOk = playerInventory.AddItem(equippedItem, 1);
-                if (backOk)
+                InventoryItem backOk = playerInventory.PlaceNewItemWithNoPosition(equippedItem);
+                if (backOk!=null)
                 {
                     ClearSlot();
-                }*/
-               // else
+                }
+                else
                 {
                     Debug.Log("背包放不下容器，无法收回");
                 }
@@ -113,6 +114,7 @@ public class ContainerSlot: MonoBehaviour, IPointerClickHandler
         equippedItem = null;
         if (iconRT != null)
         {
+            Equip(manager.defaultContainer);
             Destroy(iconRT.gameObject);
             iconRT = null;
         }

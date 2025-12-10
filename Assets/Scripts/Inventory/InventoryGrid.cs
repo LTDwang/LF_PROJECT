@@ -2,6 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public class Position
+{
+    public bool doHasPosition;
+    public int x;
+    public int y;
+    public bool rotated;
+}
 public class InventoryGrid : MonoBehaviour
 {
     [Header("背包尺寸")]
@@ -34,7 +41,7 @@ public class InventoryGrid : MonoBehaviour
         return x >= 0 && y >= 0 && x < width && y < height;
     }
     
-    //位置空余检查
+    //位置空余检查工具函数
     public bool CanPlace(ItemSO item, int x,int y, bool rotated, InventoryItem ignoreItem = null)
     {
         if (item == null)
@@ -59,13 +66,62 @@ public class InventoryGrid : MonoBehaviour
         }
         return true;
     }
-    //背包中放入实例
+
+    //为新放入背包的东西查找背包中可放入的位置
+    public Position FindPostitionToPut(ItemSO item)
+    {
+        Position position = new Position();
+        bool foundPlace = false;
+        position.doHasPosition = foundPlace;
+        bool rotated = false;
+        for (int j = 0; j < height; j++)
+        {
+            for (int i = 0; i < width; i++)
+            {
+                foundPlace = CanPlace(item, i, j, rotated);
+                if (foundPlace)
+                {
+                    position.x = i;
+                    position.y = j;
+                    position.doHasPosition = foundPlace;
+                    position.rotated = rotated;
+                    return position;
+                }
+            }
+        }
+        rotated = !rotated;
+        for (int j = 0; j < height; j++)
+        {
+            for (int i = 0; i < width; i++)
+            {
+                foundPlace = CanPlace(item, i, j, rotated);
+                if (foundPlace)
+                {
+                    position.x = i;
+                    position.y = j;
+                    position.doHasPosition = foundPlace;
+                    position.rotated = rotated;
+                    return position;
+                }
+            }
+        }
+        return position;
+    }
+    //直接往背包中尝试放入实例；
+    public InventoryItem PlaceNewItemWithNoPosition(ItemSO item)
+    {
+        Position position = FindPostitionToPut(item);
+        if (!position.doHasPosition)
+        {
+            return null;
+        }
+        return PlaceNewItem(item, 1, position.x, position.y, position.rotated);
+    }
+    //背包中确定位置放入实例
     public InventoryItem PlaceNewItem(ItemSO item, int count, int x, int y, bool rotated)
     {
-        
         if (!CanPlace(item,x,y,rotated))
         {
-            Debug.Log("进入了cannot place");
             return null;
         }
         InventoryItem inst = new InventoryItem(item, Mathf.Max(1, count), x, y, rotated);

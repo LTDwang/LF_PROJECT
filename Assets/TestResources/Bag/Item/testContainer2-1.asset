@@ -15,7 +15,7 @@ MonoBehaviour:
   id: container2-1
   displayName: 
   description: 
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: ed8bca0c6e38b93418bef108cace257d, type: 3}
   itemType: 3
   maxStack: 1
   gridWidth: 1

@@ -19,9 +19,19 @@ public class ManufactureManager : MonoBehaviour
     // 给 UI 用：需要刷新预览时回调
     public System.Action RefreshPreviewRequested;
     public Action RefreshContainer;
+
+    [Header("材料面板/结果面板")]
+    public GameObject materialPanel;
+    public GameObject resultPanel;
+
+    [Header("默认制作结果")]
+    public ManufactureRecipeSO defaultResult;
+    public ItemSO result;
+
+    private ManufactureRecipeSO currentRecipe;
     private void Awake()
     {
-        currentContainer = defaultContainer;
+        SetContainer(defaultContainer);
         if (materialGrid != null)
         {
             materialGrid.width = currentContainer.containerWidth;
@@ -31,6 +41,7 @@ public class ManufactureManager : MonoBehaviour
                 RefreshPreviewRequested?.Invoke();
             };
         }
+        result = defaultResult.outputItem;
     }
 
     private void OnDisable()
@@ -185,16 +196,11 @@ public class ManufactureManager : MonoBehaviour
 
     public ManufacturePreview GetPreviewResult()
     {
-        var recipe = FindMatchingRecipe();
-        if (recipe == null || recipe.outputItem == null || recipe.outputCount <= 0)
-        {
-            return new ManufacturePreview { item = null, count = 0 };
-        }
 
         return new ManufacturePreview
         {
-            item = recipe.outputItem,
-            count = recipe.outputCount
+            item = currentRecipe.outputItem,
+            count = currentRecipe.outputCount
         };
     }
 
@@ -207,14 +213,18 @@ public class ManufactureManager : MonoBehaviour
             Debug.LogWarning("ManufactureManager: materialGrid 或 playerInventory 未设置");
             return false;
         }
-
+        if (materialGrid.items.Count==0)
+        {
+            Debug.Log("当前材料格为空，巧妇难为无米之炊");
+            return false;
+        }
         var recipe = FindMatchingRecipe();
         if (recipe == null)
         {
-            Debug.Log("当前排列不匹配任何配方");
-            return false;
+            Debug.Log("当前排列不匹配任何配方,消耗材料制作出垃圾");
+            recipe = defaultResult;
         }
-
+        /*
         // 把产物放进背包
         bool ok = TryGiveOutputToInventory(recipe.outputItem, recipe.outputCount);
         if (!ok)
@@ -222,10 +232,10 @@ public class ManufactureManager : MonoBehaviour
             Debug.Log("背包装不下制作结果");
             return false;
         }
-
-        // 消耗材料
-        ConsumeMaterials(recipe);
-
+        */
+        ConsumeMaterials();
+        result = recipe.outputItem;
+        currentRecipe = recipe;
         // 刷新预览
         RefreshPreviewRequested?.Invoke();
 
@@ -233,7 +243,7 @@ public class ManufactureManager : MonoBehaviour
         return true;
     }
 
-    private bool TryGiveOutputToInventory(ItemSO item, int count)
+    public bool TryGiveOutputToInventory(ItemSO item, int count)
     {
         if (item == null || count <= 0) return false;
 
@@ -249,10 +259,10 @@ public class ManufactureManager : MonoBehaviour
             var inst = playerInventory.PlaceNewItem(item, count, 0, 0, false);
             return inst != null;
         }*/
-        var inst = playerInventory.PlaceNewItem(item, count, 3, 3, false);
+        var inst = playerInventory.PlaceNewItemWithNoPosition(item);
         return inst != null;
     }
-
+    /*
     private void ConsumeMaterials(ManufactureRecipeSO recipe)
     {
         int rw = recipe.width;
@@ -303,5 +313,16 @@ public class ManufactureManager : MonoBehaviour
                 }
             }
         }
+    }*/
+    private void ConsumeMaterials()
+    {
+        materialGrid.CleanGrid();
+        currentRecipe = defaultResult;
+        result = currentRecipe.outputItem;
+    }
+    public void SetPanel(bool manufacturePanel,bool reusltPanelActavie)
+    {
+        materialPanel.SetActive(manufacturePanel);
+        resultPanel.SetActive(reusltPanelActavie);
     }
 }

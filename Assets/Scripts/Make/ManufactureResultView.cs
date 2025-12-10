@@ -16,19 +16,21 @@ public class ManufactureResultView : MonoBehaviour
 
     private GridLayoutGroup layout;
     private RectTransform[,] cellRTs;       // 记录生成的格子，给图标定位用
-    public Button manufactureButton;
+    public Button putIntoBagButton;
+    public Button throwOutButton;
     private void Awake()
     {
         if (cellsRoot != null)
             layout = cellsRoot.GetComponent<GridLayoutGroup>();
-        //manufactureButton.onClick.AddListener(OnPointerClick);
+        putIntoBagButton.onClick.AddListener(PutIntoBag);
+        throwOutButton.onClick.AddListener(ThrowOut);
     }
 
     private void OnEnable()
     {
         BuildEmptyGrid(1, 1);   // 先生成一个 1×1，避免空引用
 
-        //RefreshPreview();
+        RefreshPreview();
 
         if (manager != null)
         {
@@ -151,18 +153,29 @@ public class ManufactureResultView : MonoBehaviour
 
     // ================== 点击：尝试把产物放进背包 ==================
 
-    public void OnPointerClick()
+    public void PutIntoBag()
     {
         if (manager == null)
             return;
-
+        /*
         // 沿用你之前的逻辑：成功则消耗材料并放入背包，预览会通过事件重新刷新
         if (manager.CraftIfPossible())
         {
             Debug.Log("创造");
             RefreshPreview();
+        }*/
+        if (manager.TryGiveOutputToInventory(manager.result,1))
+        {
+            manager.SetPanel(true, false);
         }
-        
-        
+        else
+        {
+            Debug.Log("放不进哦！");
+        }
+    }
+
+    public void ThrowOut()
+    {
+
     }
 }

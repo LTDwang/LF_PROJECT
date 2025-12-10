@@ -40,7 +40,8 @@ public class InventoryGridView : MonoBehaviour
     public Color previewOkColor = new Color(0f, 1f, 0f, 0.35f); // 绿色半透明
     public Color previewBadColor = new Color(1f, 0f, 0f, 0.35f); // 红色半透明
 
-    public ItemSO testItem;
+    public ItemSO testContainer;
+    public ItemSO testMaterial;
     public bool otherSystemDragging;
     public bool IsDraggingItem => draggingItem != null;
     public bool DraggingItemRotated => draggingItem != null && draggingItem.rotated;
@@ -214,7 +215,7 @@ public class InventoryGridView : MonoBehaviour
 
         float width = cellSize.x * w + spacing.x * (w - 1);
         float height = cellSize.y * h + spacing.y * (h - 1);
-        Debug.Log($"{width},{height}");
+        //Debug.Log($"{width},{height}");
         rt.sizeDelta = inst.rotated ? new Vector2(height, width): new Vector2(width, height);
         rt.rotation = inst.rotated ? Quaternion.Euler(0f, 0f, 90f):Quaternion.Euler(0f,0f,0f);
 
@@ -538,7 +539,14 @@ public class InventoryGridView : MonoBehaviour
     {
         // 等一帧，让 GridLayoutGroup 自己排版
         yield return null;
-        inventoryGrid.PlaceNewItem(testItem,1,0,0,false);
+        Position position = inventoryGrid.FindPostitionToPut(testContainer);
+        inventoryGrid.PlaceNewItem(testContainer, 1, position.x, position.y, position.rotated);
+        for (int i = 0; i < 3; i++)
+        {
+            position = inventoryGrid.FindPostitionToPut(testMaterial);
+            inventoryGrid.PlaceNewItem(testMaterial, 1, position.x, position.y, position.rotated);
+        }
+        
         //inventoryGrid.PlaceNewItem(testItem, 1, 0, 4, false);
         RefreshAllItems();
     }

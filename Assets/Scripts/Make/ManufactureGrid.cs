@@ -88,6 +88,15 @@ public class ManufactureGrid : MonoBehaviour
         }
     }
 
+    public void CleanGrid()
+    {
+        foreach (var item in items)
+        {
+            FillCells(item, item.originX, item.originY, false);
+        }
+        items.Clear();
+        OnChanged?.Invoke();
+    }
     public void RemoveItem(InventoryItem inst)
     {
         if (inst == null) return;

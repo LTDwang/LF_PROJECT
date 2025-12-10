@@ -10,12 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 56a9536a57fab114fa2507e698fa804b, type: 3}
-  m_Name: material2
+  m_Name: "\u5783\u573E"
   m_EditorClassIdentifier: 
-  id: maerial2
+  id: 
   displayName: 
   description: 
-  icon: {fileID: 21300000, guid: f20fb52c714147a43b3ce4d8d9f7c8fa, type: 3}
+  icon: {fileID: 21300000, guid: 588edab47c3f48d40ba60e5a7e1a98ac, type: 3}
   itemType: 1
   maxStack: 1
   gridWidth: 1
