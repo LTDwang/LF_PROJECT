@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -16,8 +17,14 @@ using UnityEngine.Events;
 
         private readonly Dictionary<IInteractable, Vector3> _candidates = new();
         private IInteractable _current;
+        private IInteractable _active;
         private Transform _player;
 
+        [Header("长按阈值")]
+        public float holdThreshold = 0.5f;
+
+        private bool _pressing = true;
+        private float _pressStartTime = -1f;
         void Awake() => _player = transform;
 
         public void AddCandidate(IInteractable it, Vector2 hintPos)
@@ -29,11 +36,13 @@ using UnityEngine.Events;
         {
             if (_candidates.ContainsKey(it)) _candidates.Remove(it);
             if (_current == it) _current = null;
+            if (_active == it) _active = null;
         }
 
         void Update()
         {
-            PickBest();
+            if (!_pressing)
+                PickBest();
 
             if (_current != null && _current.CanInteract(_player))
                 OnPromptChanged?.Invoke(_current.Prompt);
@@ -42,8 +51,40 @@ using UnityEngine.Events;
 
             if (_current != null && Input.GetKeyDown(interactKey))
             {
-                if (_current.CanInteract(_player)) _current.Interact(_player);
+            _pressing = true;
+            _pressStartTime = Time.time;
+            _active = _current;              
             }
+        if (_pressing&&Input.GetKey(interactKey))
+        {
+            if (_active!=null)
+            {
+                float time = Mathf.Max(0f, Time.time - _pressStartTime);
+                float progress = Mathf.Clamp01(holdThreshold <= 0f ? 1f : time / holdThreshold);
+            }
+        }
+        if (_pressing&&Input.GetKeyUp(interactKey))
+        {
+            _pressing = false;
+            float held = Mathf.Max(0f, Time.time - _pressStartTime);
+            _pressStartTime = -1f;
+
+            // 目标消失/超距就不触发
+            if (_active != null && _active.CanInteract(_player))
+            {
+                // 若交互物实现了短/长按接口，优先走该接口；否则退回到原始 Interact()
+                if (_active is IShortLongInteractable sl)
+                {
+                    if (held >= holdThreshold) sl.LongInteract(_player);
+                    else sl.ShortInteract(_player);
+                }
+                else
+                {
+                    // 保持向后兼容：没有实现可选接口时，仍调用你的原始单一 Interact() 行为
+                    _active.Interact(_player);
+                }
+            }
+        }
         }
 
         void PickBest()

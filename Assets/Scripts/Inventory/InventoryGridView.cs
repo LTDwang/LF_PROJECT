@@ -46,6 +46,7 @@ public class InventoryGridView : MonoBehaviour
     public bool IsDraggingItem => draggingItem != null;
     public bool DraggingItemRotated => draggingItem != null && draggingItem.rotated;
 
+   
     // 返回正在拖的物品类型（ItemSO）
     public ItemSO GetDraggingItemSO()
     {
@@ -82,6 +83,8 @@ public class InventoryGridView : MonoBehaviour
     {
         layout = cellsRoot.GetComponent<GridLayoutGroup>();
         rootCanvas = GetComponentInParent<Canvas>();
+        InventoryGrid inventory = GameObject.FindGameObjectWithTag("InventoryManager").GetComponentInParent<InventoryGrid>();
+        inventory.inventory = this;
     }
 
     private void Start()
@@ -95,7 +98,7 @@ public class InventoryGridView : MonoBehaviour
         BuildCells();
         
         StartCoroutine(DelayedRefresh());
-        RefreshAllItems();
+        //RefreshAllItems();
     }
     private void Update()
     {
@@ -539,6 +542,7 @@ public class InventoryGridView : MonoBehaviour
     {
         // 等一帧，让 GridLayoutGroup 自己排版
         yield return null;
+        /*
         Position position = inventoryGrid.FindPostitionToPut(testContainer);
         inventoryGrid.PlaceNewItem(testContainer, 1, position.x, position.y, position.rotated);
         for (int i = 0; i < 3; i++)
@@ -547,7 +551,7 @@ public class InventoryGridView : MonoBehaviour
             inventoryGrid.PlaceNewItem(testMaterial, 1, position.x, position.y, position.rotated);
         }
         
-        //inventoryGrid.PlaceNewItem(testItem, 1, 0, 4, false);
+        //inventoryGrid.PlaceNewItem(testItem, 1, 0, 4, false);*/
         RefreshAllItems();
     }
 }

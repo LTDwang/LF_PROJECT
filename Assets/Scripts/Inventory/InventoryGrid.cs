@@ -18,16 +18,15 @@ public class InventoryGrid : MonoBehaviour
     private InventoryItem[,] cells;
     [SerializeField]
     private List<InventoryItem> items = new List<InventoryItem>();
-    
-    private InventoryGridView inventory;
+
+    public InventoryGridView inventory;
     public IReadOnlyList<InventoryItem> Items => items;
     public int Width => width;
     public int Height => height;
 
     
-    private void Awake()
+    private void Start()
     {
-        inventory = GetComponentInParent<InventoryGridView>();
         cells = new InventoryItem[width, height];
     }
     public InventoryItem GetItemAt(int x,int y)
@@ -129,7 +128,8 @@ public class InventoryGrid : MonoBehaviour
         items.Add(inst);
         
         FillCells(inst, inst.originX, inst.originY, true);
-        inventory.RefreshAllItems();
+        if (inventory!=null&&inventory.gameObject.activeSelf!=false)
+            inventory.RefreshAllItems();
         return inst;
     }
     private void FillCells(InventoryItem inst, int originX, int originY, bool occupy)

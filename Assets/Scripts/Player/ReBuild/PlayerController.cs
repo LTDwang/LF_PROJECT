@@ -31,13 +31,15 @@ public class PlayerController : MonoBehaviour
         climbController = GetComponent<ClimbController>();
         throwController = GetComponent<ThrowController>();
         groundChecker = GetComponent<GroundChecker>();
-
+        
         inputHandler = GetComponent<InputHandler>();
         if (inputHandler == null)
         {
             inputHandler = gameObject.AddComponent<InputHandler>();
         }
 
+        inventoryUI = GameObject.FindGameObjectWithTag("InventoryUI");
+        inventoryUI.SetActive(false);
         // 初始化配置数据到各个组件
         InitializeConfigData();
     }
@@ -217,6 +219,7 @@ public class PlayerController : MonoBehaviour
     public void OnOpenInventory(InputAction.CallbackContext ctx)
     {
         inventoryOpen = true;
+        Debug.Log("openui");
         if (inventoryUI != null)
         {
             inventoryUI.SetActive(true);

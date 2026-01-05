@@ -18,6 +18,7 @@ public class ManufactureResultView : MonoBehaviour
     private RectTransform[,] cellRTs;       // 记录生成的格子，给图标定位用
     public Button putIntoBagButton;
     public Button throwOutButton;
+    public DropSystem dropSystem;
     private void Awake()
     {
         if (cellsRoot != null)
@@ -175,6 +176,7 @@ public class ManufactureResultView : MonoBehaviour
 
     public void ThrowOut()
     {
-
+        dropSystem.Drop(manager.result);
+        manager.SetPanel(true, false);
     }
 }

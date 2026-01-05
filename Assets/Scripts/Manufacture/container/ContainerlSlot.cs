@@ -26,8 +26,7 @@ public class ContainerSlot: MonoBehaviour, IPointerClickHandler
     private void OnEnable()
     {
         icon.gameObject.SetActive(false);
-        manager = gameObject.GetComponentInParent<ManufactureManager>();
-        manager.ClearContainer();
+        manager = GameObject.FindGameObjectWithTag("ManufactureManager").GetComponent<ManufactureManager>();
         ClearSlot();
         Equip(manager.defaultContainer);
     }
@@ -90,7 +89,6 @@ public class ContainerSlot: MonoBehaviour, IPointerClickHandler
     private void Equip(ItemSO so)
     {
         icon.gameObject.SetActive(true);
-        Debug.Log("∑≈»Î»›∆˜£°");
         inventoryView.ConsumeOneFromDraggingForExternal();
         equippedItem = so;
         manager.SetContainer(so);
