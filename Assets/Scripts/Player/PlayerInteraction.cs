@@ -80,7 +80,6 @@ using UnityEngine.Events;
                 }
                 else
                 {
-                    // 保持向后兼容：没有实现可选接口时，仍调用你的原始单一 Interact() 行为
                     _active.Interact(_player);
                 }
             }

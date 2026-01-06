@@ -22,7 +22,7 @@ public class GroundChecker : MonoBehaviour
     private float displayColliderHeight = 0f;
 
     private LayerMask groundMask;
-    private BoxCollider2D boxCollider;
+    private CapsuleCollider2D boxCollider;
 
     private void Awake()
     {
@@ -32,7 +32,7 @@ public class GroundChecker : MonoBehaviour
         if (rayCount > 10) rayCount = 10;
         
         // 获取 BoxCollider2D 组件
-        boxCollider = GetComponent<BoxCollider2D>();
+        boxCollider = GetComponent<CapsuleCollider2D>();
         if (boxCollider == null)
         {
             Debug.LogWarning($"GroundChecker: {gameObject.name} 上未找到 BoxCollider2D 组件，将使用默认检测方式");
@@ -117,7 +117,7 @@ public class GroundChecker : MonoBehaviour
         // 如果 boxCollider 未初始化，尝试获取（用于编辑器模式）
         if (boxCollider == null)
         {
-            boxCollider = GetComponent<BoxCollider2D>();
+            boxCollider = GetComponent<CapsuleCollider2D>();
         }
         
         Vector2[] origins = new Vector2[rayCount];
@@ -130,7 +130,6 @@ public class GroundChecker : MonoBehaviour
             
             // 更新显示值：碰撞盒高度
             displayColliderHeight = bounds.size.y;
-            
             // 计算碰撞盒底部的宽度
             float bottomWidth = bounds.size.x;
             float bottomY = bounds.min.y;

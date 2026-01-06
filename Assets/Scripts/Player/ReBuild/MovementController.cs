@@ -67,6 +67,11 @@ public class MovementController : MonoBehaviour
     public float FaceDir => faceDir;
     public bool IsDashing => dashing;
     public bool CanMove => !dashing;
+    public float HorizongtalVelocity => currentHorizontalVelocity;
+    public float VerticalVelocity => currentVerticalVelocity;
+    public bool IsCrouching => isCrouching;
+    public bool IsJumping => isJumping;
+    public bool IsGrounded => groundChecker != null && groundChecker.IsGrounded();
 
     private void Awake()
     {

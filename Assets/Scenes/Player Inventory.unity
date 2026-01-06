@@ -311,7 +311,7 @@ GameObject:
   m_Component:
   - component: {fileID: 425460311}
   - component: {fileID: 425460310}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: AimLine
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -494,7 +494,7 @@ GameObject:
   - component: {fileID: 481794308}
   - component: {fileID: 481794310}
   - component: {fileID: 481794309}
-  m_Layer: 8
+  m_Layer: 6
   m_Name: Interact Zone
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -525,9 +525,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 481794307}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8079f4f9a6de04c45a8fdd6d59420007, type: 3}
+  m_Script: {fileID: 11500000, guid: 559a45e43049c2c49a24cc4632d0649b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerTag: Player
 --- !u!61 &481794310
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -713,10 +714,7 @@ GameObject:
   - component: {fileID: 531102633}
   - component: {fileID: 531102635}
   - component: {fileID: 531102639}
-  - component: {fileID: 531102638}
-  - component: {fileID: 531102637}
-  - component: {fileID: 531102636}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: "\u68AF\u5B50"
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -821,7 +819,7 @@ BoxCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
@@ -837,69 +835,6 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
---- !u!114 &531102636
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 531102631}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 44fecdcd132af1d44baaf23c74d1e9dd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  rayDistance: 0.25
-  groundLayerNames:
-  - Ground
-  rayCount: 3
-  displayIsGrounded: 0
-  displayColliderHeight: 3.6504
---- !u!114 &531102637
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 531102631}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 368423e78c331e64aad293074d598f50, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  climbSpeedUp: 4
-  climbSpeedSide: 3
---- !u!114 &531102638
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 531102631}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7c2d6b2e464ae634ba2c595401b70e3d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  moveSpeed: 8
-  accel: 60
-  decel: 80
-  crouchMoveSpeed: 4
-  crouchAccel: 30
-  crouchDecel: 40
-  dashSpeed: 16
-  dashAccel: 200
-  dashTime: 0.15
-  dashCooldown: 0.4
-  jumpVelocity: 12
-  coyoteTime: 0.1
-  jumpBuffer: 0.1
-  jumpHoldTime: 0.2
-  fallGravityScale: 2.2
-  earlyReleaseGravityScale: 2.8
-  maxFallSpeed: -30
-  displayHorizontalVelocity: 0
-  displayVerticalVelocity: 0
 --- !u!50 &531102639
 Rigidbody2D:
   serializedVersion: 4
@@ -926,7 +861,7 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 0
+  m_Constraints: 7
 --- !u!114 &531102640
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -936,9 +871,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 531102631}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 107ab2a4f475adb4f93b84690d4f56e6, type: 3}
+  m_Script: {fileID: 11500000, guid: 5d28da182df52e442af4c88c22a2f246, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  snapAnchor: {fileID: 0}
+  prompt: "\u6309 E \u6500\u722C"
+  priority: 5
 --- !u!1 &684114243
 GameObject:
   m_ObjectHideFlags: 0
@@ -949,13 +887,13 @@ GameObject:
   m_Component:
   - component: {fileID: 684114244}
   - component: {fileID: 684114245}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: "\u671D\u5411\u6307\u793A"
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &684114244
 Transform:
   m_ObjectHideFlags: 0
@@ -1032,7 +970,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 808017633}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: "\u6500\u722C\u8D77\u70B9"
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1145,7 +1083,8 @@ GameObject:
   - component: {fileID: 896699255}
   - component: {fileID: 896699254}
   - component: {fileID: 896699258}
-  m_Layer: 0
+  - component: {fileID: 896699259}
+  m_Layer: 7
   m_Name: player
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -1184,8 +1123,8 @@ CapsuleCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  m_Size: {x: 1, y: 2}
+  m_Offset: {x: 0, y: 0.022570133}
+  m_Size: {x: 1, y: 1.7132063}
   m_Direction: 0
 --- !u!50 &896699248
 Rigidbody2D:
@@ -1254,7 +1193,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 10
   m_Sprite: {fileID: 1867484943, guid: d422c6b5904604b41b065e2ec58c1efc, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -1367,7 +1306,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3ae0f988870469545a6c181e8e6d6049, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  configData: {fileID: 0}
+  configData: {fileID: 11400000, guid: 5ce6cfaccfff8b24c8c54debb5f7266d, type: 2}
   inventoryUI: {fileID: 0}
 --- !u!114 &896699255
 MonoBehaviour:
@@ -1386,7 +1325,7 @@ MonoBehaviour:
   - Ground
   rayCount: 3
   displayIsGrounded: 0
-  displayColliderHeight: 0
+  displayColliderHeight: 1.7132063
 --- !u!114 &896699256
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1453,6 +1392,33 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &896699259
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 896699245}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2f5b13237257f6244a43f68e5def8ddc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  animator: {fileID: 0}
+  movement: {fileID: 0}
+  player: {fileID: 0}
+  pSpeed: Speed
+  pVSpeed: VSpeed
+  pGrounded: Grounded
+  pCrouching: Crouching
+  pJumping: Jumping
+  pDashing: Dashing
+  pClimbing: Climbing
+  pAiming: Aiming
+  tJump: Jump
+  tLand: Land
+  tDash: Dash
+  tThrow: Throw
 --- !u!1 &955938858
 GameObject:
   m_ObjectHideFlags: 0
@@ -1533,7 +1499,7 @@ GameObject:
   - component: {fileID: 1005067714}
   - component: {fileID: 1005067717}
   - component: {fileID: 1005067716}
-  m_Layer: 6
+  m_Layer: 3
   m_Name: Square
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1639,7 +1605,7 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: 0, y: -0.09826717}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -1650,7 +1616,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 1, y: 0.80346566}
   m_EdgeRadius: 0
 --- !u!50 &1005067717
 Rigidbody2D:
@@ -1662,7 +1628,7 @@ Rigidbody2D:
   m_GameObject: {fileID: 1005067712}
   m_BodyType: 1
   m_Simulated: 1
-  m_UseFullKinematicContacts: 0
+  m_UseFullKinematicContacts: 1
   m_UseAutoMass: 0
   m_Mass: 1
   m_LinearDrag: 0
@@ -1912,7 +1878,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1561369177}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: LeftHand
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1943,7 +1909,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1593680049}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: GameObject
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1974,7 +1940,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1621777738}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: DropPoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2039,7 +2005,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1822085000}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: RightHand
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6494,7 +6460,6 @@ SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
   - {fileID: 519420032}
-  - {fileID: 896699250}
   - {fileID: 1005067715}
   - {fileID: 3157943437058804775}
   - {fileID: 63281215}
@@ -6502,3 +6467,4 @@ SceneRoots:
   - {fileID: 531102634}
   - {fileID: 955938861}
   - {fileID: 2110897254}
+  - {fileID: 896699250}

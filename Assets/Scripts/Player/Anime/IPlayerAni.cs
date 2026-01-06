@@ -4,7 +4,7 @@ using UnityEngine;
 
 interface IPlayerAni
 {
-    void OnEnter();
-    void OnUpdate();
-    void OnExit();
+    void GetStart();
+    void KeepPlay();
+    void Exit();
 }
