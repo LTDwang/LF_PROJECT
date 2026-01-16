@@ -143,6 +143,7 @@ public class MovementController : MonoBehaviour
 
     public void TryDash()
     {
+        Debug.Log("dashing");
         if (dashCdTimer <= 0f && !dashing)
         {
             dashing = true;

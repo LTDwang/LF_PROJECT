@@ -12,6 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e443ea72893f399408e39c65e5f3095b, type: 3}
   m_Name: Chara
   m_EditorClassIdentifier: 
+  maxHP: 3
+  maxEnergy: 100
+  recoverRate: 5
+  stayTime: 5
+  jumpCost: -20
+  dashCost: -50
   moveSpeed: 8
   accel: 60
   decel: 80

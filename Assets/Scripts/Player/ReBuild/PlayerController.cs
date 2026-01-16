@@ -23,8 +23,13 @@ public class PlayerController : MonoBehaviour
     private InputHandler inputHandler;
     private GroundChecker groundChecker;
     private PlayerInteraction playerInteraction;
+    private PlayerCha playerCha;
 
     private bool inventoryOpen = false;
+    private int jumpCost;
+    private int dashCost;
+    private float stayTime;
+    private float stayedTime;//已经僵直了的时间
 
     private void Awake()
     {
@@ -34,6 +39,7 @@ public class PlayerController : MonoBehaviour
         groundChecker = GetComponent<GroundChecker>();
         playerInteraction = GetComponent<PlayerInteraction>();
         inputHandler = GetComponent<InputHandler>();
+        playerCha = GetComponent<PlayerCha>();
 
         if (inputHandler == null)
         {
@@ -70,6 +76,8 @@ public class PlayerController : MonoBehaviour
             movementController = GetComponent<MovementController>();
         if (groundChecker == null)
             groundChecker = GetComponent<GroundChecker>();
+        if (playerCha == null)
+            playerCha = GetComponent<PlayerCha>();
 
         // 将配置数据传递给MovementController
         if (movementController != null)
@@ -93,6 +101,11 @@ public class PlayerController : MonoBehaviour
             Debug.LogWarning($"PlayerController: 未找到 GroundChecker 组件");
         }
 
+        if (playerCha!=null)
+        {
+            playerCha.InitializeFromConfig(configData);
+        }
+
         Debug.Log($"PlayerController: 配置数据应用完成");
     }
 
@@ -109,16 +122,28 @@ public class PlayerController : MonoBehaviour
         {
             throwController.FaceDir = movementController.FaceDir;
         }
+        stayTime = configData.stayTime;
+        stayedTime = stayTime+0.001f;
+        jumpCost = configData.jumpCost;
+        dashCost = configData.dashCost;
     }
 
     private void Update()
     {
-        if (controlLocked || inventoryOpen)
+        
+        if (controlLocked || inventoryOpen )
         {
+            inputHandler?.ClearMoveInput();
+            climbController.ExitClimb();
+            return;
+        }
+        if (stayedTime<stayTime)
+        {
+            Debug.Log("staying");
+            stayedTime += Time.deltaTime;
             inputHandler?.ClearMoveInput();
             return;
         }
-
 
         // 常规移动：非攀爬状态下由MovementController更新
         if (movementController != null && !climbController.IsClimbing)
@@ -137,17 +162,15 @@ public class PlayerController : MonoBehaviour
         {
             throwController.FaceDir = movementController.FaceDir;
         }
-
+        if (playerCha.EnergyOut())
+        {
+            stayedTime = 0;
+            Debug.Log("run out");
+        }
     }
 
     private void FixedUpdate()
     {
-        if (controlLocked || inventoryOpen)
-        {
-            return;
-        }
-
-
         // 攀爬时不参与地面运动，直接交由攀爬控制器处理
         if (climbController.IsClimbing)
         {
@@ -192,20 +215,20 @@ public class PlayerController : MonoBehaviour
     public void OnJump(InputAction.CallbackContext ctx)
     {
         if (inventoryOpen) return;
-
-
         if (ctx.performed && climbController.IsClimbing)
         {
             climbController.ExitClimb();
         }
 
         inputHandler?.OnJump(ctx);
+        playerCha.ChangeEnergy(jumpCost);
     }
 
     public void OnDash(InputAction.CallbackContext ctx)
     {
         if (inventoryOpen) return;
         inputHandler?.OnDash(ctx);
+        playerCha.ChangeEnergy(dashCost);
     }
 
     public void OnUseLeftHand(InputAction.CallbackContext ctx)

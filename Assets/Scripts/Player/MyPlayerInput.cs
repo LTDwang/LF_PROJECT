@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -57,7 +58,7 @@ public class MyPlayerInput : MonoBehaviour
     public KeyBinding jumpBinding = new KeyBinding { keyboardBinding = "<Keyboard>/space", gamepadBinding = "<Gamepad>/buttonSouth" };
 
     [Tooltip("冲刺按键绑定")]
-    public KeyBinding dashBingding = new KeyBinding { keyboardBinding = "<Keyboard/leftShift>", gamepadBinding = "<Gamepad>/bottonWest" };
+    public KeyBinding dashBingding = new KeyBinding { keyboardBinding = "<Keyboard>/leftShift", gamepadBinding = "<Gamepad>/bottonWest" };
 
     [Header("手部动作配置")]
     [Tooltip("左手使用按键绑定")]
@@ -138,6 +139,7 @@ public class MyPlayerInput : MonoBehaviour
         SetupInventory();
         SetupInteraction();
         SetupPickUp();
+        SetupDash();
     }
 
     private void OnEnable() 
@@ -279,6 +281,19 @@ public class MyPlayerInput : MonoBehaviour
         unbindActions.Add(() => { throwLeft.started -= leftStarted; throwLeft.canceled -= leftCanceled; });
     }
 
+    ///<summary>
+    ///设置冲刺输入
+    ///</summary>
+    public void SetupDash()
+    {
+        dash = map.AddAction("Dash", InputActionType.Button);
+        AddBindingToAction(dash, dashBingding);
+        Action<InputAction.CallbackContext> onDash = controller.OnDash;
+        dash.started += onDash;
+        unbindActions.Add(() => { dash.started -= onDash; });
+    }
+
+
     /// <summary>
     /// 设置背包输入
     /// </summary>
@@ -288,7 +303,9 @@ public class MyPlayerInput : MonoBehaviour
         AddBindingToAction(openInventory, openInventoryBinding);
 
         System.Action<InputAction.CallbackContext> onInv = OnOpenInventoryPerformed;
+        openInventory.started += onInv;
         openInventory.performed += onInv;
+        openInventory.canceled += onInv;
 
         unbindActions.Add(() => openInventory.performed -= onInv);
     }

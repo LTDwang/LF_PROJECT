@@ -6,6 +6,20 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "NewPlayerConfig", menuName = "Player/Player Config Data", order = 1)]
 public class PlayerConfigData : ScriptableObject
 {
+    [Header("============人物属性=============")]
+    [Tooltip("开局最高血量")]
+    public int maxHP = 3;
+    [Tooltip("开局最高体力值")]
+    public int maxEnergy = 100;
+    [Tooltip("体力回复速度")]
+    public int recoverRate = 5;
+    [Tooltip("能量耗尽僵直时间")]
+    public float stayTime = 5f;
+    [Tooltip("跳跃能量消耗")]
+    public int jumpCost = 20;
+    [Tooltip("冲刺能量消耗")]
+    public int dashCost = 50;
+
     [Header("========== 移动功能配置 ==========")]
     [Tooltip("基础移动速度")]
     public float moveSpeed = 8f;

@@ -5,6 +5,11 @@ using UnityEngine.UI;
 using TMPro;
 using Unity.Mathematics;
 
+public enum InventoryInputMode
+{
+    Mouse,
+    Cursor
+}
 public class InventoryGridView : MonoBehaviour
 {
     [Header("逻辑背包")]
@@ -16,11 +21,12 @@ public class InventoryGridView : MonoBehaviour
     public GameObject cellPrefab;         
     public GameObject itemIconPrefab;    
 
-    private InventoryCellUI[,] cellUIs;
+    public InventoryCellUI[,] cellUIs;
     private Dictionary<InventoryItem, RectTransform> itemIcons =
         new Dictionary<InventoryItem, RectTransform>();
 
     private GridLayoutGroup layout;
+    public GridLayoutGroup Layout => layout;
 
     private InventoryItem selectedItem;
     private Color selectedColor = new Color(1f, 1f, 0.6f);
@@ -43,10 +49,13 @@ public class InventoryGridView : MonoBehaviour
     public ItemSO testContainer;
     public ItemSO testMaterial;
     public bool otherSystemDragging;
+
+    [Header("控制模式--鼠标/手柄")]
+    public InventoryInputMode inputMode = InventoryInputMode.Cursor;
     public bool IsDraggingItem => draggingItem != null;
     public bool DraggingItemRotated => draggingItem != null && draggingItem.rotated;
 
-   
+    public InventoryItem DraggingItem => draggingItem;
     // 返回正在拖的物品类型（ItemSO）
     public ItemSO GetDraggingItemSO()
     {
@@ -102,6 +111,11 @@ public class InventoryGridView : MonoBehaviour
     }
     private void Update()
     {
+        if (inputMode == InventoryInputMode.Cursor && draggingItem != null && draggingIcon != null)
+        {
+            return;
+        }
+
         if (draggingItem != null && draggingIcon != null)
         {
             // 跟随鼠标
@@ -152,6 +166,7 @@ public class InventoryGridView : MonoBehaviour
         {
             Destroy(child.gameObject);
         }
+       
 
         for (int y = 0; y < h; y++)
         {
@@ -465,7 +480,7 @@ public class InventoryGridView : MonoBehaviour
     }
 
     // 清除所有格子的高亮（恢复原色）
-    private void ClearPreview()
+    public void ClearPreview()
     {
         if (cellUIs == null || inventoryGrid == null) return;
 

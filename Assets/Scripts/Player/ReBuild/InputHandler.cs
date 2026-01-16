@@ -41,7 +41,7 @@ public class InputHandler : MonoBehaviour
 
     public void OnDash(InputAction.CallbackContext ctx)
     {
-        if (ctx.performed)
+        if (ctx.started)
         {
             dashPressed = true;
         }
