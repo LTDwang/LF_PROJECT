@@ -85,7 +85,6 @@ public class ItemCanPick : MonoBehaviour, IPickupInteractable, IShortLongInterac
             if (inventory != null && item != null)
             {
                 inventory.PlaceNewItemWithNoPosition(item);
-                Debug.Log($"[Pickup-Long] {name} 放入背包");
                 Destroy(gameObject);
                 return;
             }

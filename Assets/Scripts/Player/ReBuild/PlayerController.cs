@@ -241,10 +241,9 @@ public class PlayerController : MonoBehaviour
         inputHandler?.OnUseRightHand(ctx);
     }
 
-    public void OnOpenInventory(InputAction.CallbackContext ctx)
+    public void OnOpenInventory()
     {
         inventoryOpen = true;
-        Debug.Log("openui");
         if (inventoryUI != null)
         {
             inventoryUI.SetActive(true);
@@ -252,7 +251,7 @@ public class PlayerController : MonoBehaviour
         SetControlLocked(true);
     }
 
-    public void OnCloseInventory(InputAction.CallbackContext ctx)
+    public void OnCloseInventory()
     {
         inventoryOpen = false;
         if (inventoryUI != null)

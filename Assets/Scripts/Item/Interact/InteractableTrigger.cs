@@ -21,7 +21,6 @@
 
     void OnTriggerEnter2D(Collider2D other)
         {
-            Debug.Log("进入");
             if (interactable == null) return;
             if (!string.IsNullOrEmpty(playerTag) && !other.CompareTag(playerTag)) return;
 

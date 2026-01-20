@@ -69,21 +69,9 @@ public class InventoryGridView : MonoBehaviour
     {
         if (draggingItem == null) return false;
 
-        // 减少数量
-        draggingItem.count -= 1;
-
-        // 数量用完：从背包里删除这个物品实例
-        if (draggingItem.count <= 0)
-        {
-            inventoryGrid.RemoveItem(draggingItem); 
-            StopDrag();                             // 恢复原格子图标、销毁跟随图标
-        }
-        else
-        {
-            // 还有剩余：结束拖拽，让原格子显示新的数量
-            StopDrag();
-        }
-
+        inventoryGrid.RemoveItem(draggingItem);
+        StopDrag();                             // 恢复原格子图标、销毁跟随图标
+        
         // 重绘背包中所有物品图标
         RefreshAllItems();
         return true;
@@ -435,7 +423,7 @@ public class InventoryGridView : MonoBehaviour
         draggingIcon.anchoredPosition = localPos;
     }
 
-    private void StopDrag()
+    public void StopDrag()
     {
         ClearPreview();
         hoveredCell = null;

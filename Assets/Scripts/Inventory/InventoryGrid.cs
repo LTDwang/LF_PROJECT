@@ -18,11 +18,15 @@ public class InventoryGrid : MonoBehaviour
     private InventoryItem[,] cells;
     [SerializeField]
     private List<InventoryItem> items = new List<InventoryItem>();
-
+    [SerializeField]
+    private Dictionary<ItemSO, int> itemCount = new Dictionary<ItemSO, int>();
+    [SerializeField]
+    private Dictionary<ItemSO,List<Position>> itemsPos = new Dictionary<ItemSO,List<Position>>();
     public InventoryGridView inventory;
     public IReadOnlyList<InventoryItem> Items => items;
     public int Width => width;
     public int Height => height;
+    
 
     
     private void Start()
@@ -126,7 +130,13 @@ public class InventoryGrid : MonoBehaviour
         InventoryItem inst = new InventoryItem(item, Mathf.Max(1, count), x, y, rotated);
         Debug.Log($"成功创建{inst.item.name}");
         items.Add(inst);
-        
+        Position position = new Position();
+        position.x = x;
+        position.y = y;
+        position.rotated = rotated;
+        position.doHasPosition = true;
+        AddPosition(item, position);
+        CountAdd(item);
         FillCells(inst, inst.originX, inst.originY, true);
         if (inventory!=null&&inventory.gameObject.activeSelf!=false)
             inventory.RefreshAllItems();
@@ -168,6 +178,9 @@ public class InventoryGrid : MonoBehaviour
         inst.originY = newY;
         inst.rotated = newRotated;
         FillCells(inst, inst.originX, inst.originY, true);
+        items.Add(inst);
+        CountAdd(inst.item);
+        AddPosition(inst.item, new Position { doHasPosition = true, rotated = inst.rotated, x = inst.originX, y = inst.originY });
         return true;
     }
     public void RemoveItem(InventoryItem inst)
@@ -176,8 +189,12 @@ public class InventoryGrid : MonoBehaviour
         {
             return;
         }
+
+        CountConsume(inst.item);
+        PosConsum(inst.item, new Position { doHasPosition = true, rotated = inst.rotated, x = inst.originX, y = inst.originY });
         FillCells(inst, inst.originX, inst.originY, false);
         items.Remove(inst);
+        inventory.RefreshAllItems();
     }
     public void MovingItem(InventoryItem inst)
     {
@@ -186,5 +203,108 @@ public class InventoryGrid : MonoBehaviour
             return;
         }
         FillCells(inst, inst.originX, inst.originY, false);
+        items.Remove(inst);
+        CountConsume(inst.item);
+        Position position = new Position();
+        position.x = inst.originX;
+        position.y = inst.originY;
+        position.doHasPosition = true;
+        position.rotated = inst.rotated;
+        PosConsum(inst.item, position);
     }
+
+    public void CountAdd(ItemSO item, int amount =1)
+    {
+        if (itemCount.ContainsKey(item))
+        {
+            itemCount[item]+= amount;
+        }
+        else
+        {
+            itemCount.Add(item, amount);
+        }
+    }
+    public bool CountConsume(ItemSO item, int amount = 1)
+    {
+        if (!itemCount.ContainsKey(item))
+        {
+            return false;
+        }
+        itemCount[item]-= amount;
+        if (itemCount[item]<=0)
+        {
+            Debug.Log("用完了");
+            itemCount.Remove(item);
+        }
+        return true;
+    }
+
+    public int GetTotalCount(ItemSO item)
+    {
+        if (itemCount.ContainsKey(item))
+        {
+            return itemCount[item];
+        }
+        return 0;
+    }
+
+    public void AddPosition(ItemSO item, Position position)
+    {
+        if (itemsPos.ContainsKey(item))
+        {
+            itemsPos[item].Add(position);
+        }
+        else
+        {
+            List<Position> positions = new List<Position>();
+            positions.Add(position);
+            itemsPos.Add(item, positions);
+        }
+    }
+    public void PosConsum(ItemSO item,Position position)
+    {
+        itemsPos[item].Remove(position);
+        if (itemsPos[item].Count==0)
+        {
+            itemsPos.Remove(item);
+        }
+    }
+
+    public Position GetPosOFItem(ItemSO item)
+    {
+        if (itemsPos.ContainsKey(item))
+        {
+            return itemsPos[item][0];
+        }
+        return null;
+    }
+
+    public bool TryConsumeOne(ItemSO item)
+    {
+        if (item == null) return false;
+        if (GetTotalCount(item) <= 0) return false;
+
+        // 1) 从 itemsPos 找一个该物品的位置
+        if (!itemsPos.ContainsKey(item) || itemsPos[item].Count == 0) return false;
+        var pos = itemsPos[item][0];
+
+        // 2) 找到对应 InventoryItem 实例（originX/Y/rotated 匹配）
+        InventoryItem inst = null;
+        for (int i = 0; i < items.Count; i++)
+        {
+            var it = items[i];
+            if (it != null && it.item == item &&
+                it.originX == pos.x && it.originY == pos.y && it.rotated == pos.rotated)
+            {
+                inst = it;
+                break;
+            }
+        }
+        if (inst == null) return false;
+
+        // 3) 移除实例（RemoveItem 会把四套数据一起同步掉）
+        RemoveItem(inst);
+        return true;
+    }
+
 }

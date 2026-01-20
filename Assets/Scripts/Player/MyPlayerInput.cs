@@ -78,6 +78,8 @@ public class MyPlayerInput : MonoBehaviour
     [Header("系统功能配置")]
     [Tooltip("打开背包按键绑定")]
     public KeyBinding openInventoryBinding = new KeyBinding { keyboardBinding = "<Keyboard>/tab", gamepadBinding = "<Gamepad>/buttonNorth" };
+    public float inventoryKeyKeepTime = 0.75f;
+    public float inventoryStartTime;
     
     [Tooltip("交互按键绑定")]
     public KeyBinding interactBinding = new KeyBinding { keyboardBinding = "<Keyboard>/f", gamepadBinding = "<Gamepad>/dpad/up" };
@@ -136,7 +138,7 @@ public class MyPlayerInput : MonoBehaviour
         SetupJump();
         SetupUseHands();
         SetupThrowAndAim();
-        SetupInventory();
+        //SetupInventory();
         SetupInteraction();
         SetupPickUp();
         SetupDash();
@@ -297,6 +299,7 @@ public class MyPlayerInput : MonoBehaviour
     /// <summary>
     /// 设置背包输入
     /// </summary>
+    /*
     private void SetupInventory()
     {
         openInventory = map.AddAction("OpenInventory", InputActionType.Button);
@@ -308,7 +311,7 @@ public class MyPlayerInput : MonoBehaviour
         openInventory.canceled += onInv;
 
         unbindActions.Add(() => openInventory.performed -= onInv);
-    }
+    }*/
 
     /// <summary>
     /// 设置交互输入
@@ -401,16 +404,25 @@ public class MyPlayerInput : MonoBehaviour
 
     private void OnOpenInventoryPerformed(InputAction.CallbackContext ctx)
     {
+        if (ctx.performed)
+        {
+            inventoryStartTime += Time.deltaTime;
+        }
+        if (ctx.canceled && inventoryStartTime < inventoryKeyKeepTime)
+        {
+            Debug.Log("?????????");
         if (!bagOpening)
         {
             bagOpening = true;
-            controller.OnOpenInventory(ctx);
+            controller.OnOpenInventory();
         }
         else
         {
             bagOpening = false;
-            controller.OnCloseInventory(ctx);
+            controller.OnCloseInventory();
         }
+    }
+        
     }
 
     #endregion
