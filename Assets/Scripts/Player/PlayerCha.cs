@@ -5,12 +5,19 @@ using UnityEngine;
 [RequireComponent(typeof(PlayerController))]
 public class PlayerCha : MonoBehaviour
 {
+    [SerializeField]
     private PlayerConfigData playerConfig;
+    [SerializeField]
     private int maxHP;
+    [SerializeField]
     private float maxEnergy;
+    [SerializeField]
     private int currentHP;
+    [SerializeField]
     private float currentEnergy;
+    [SerializeField]
     private float energyRecoverRate;
+    public ChaUI chaUI;
     public void InitializeFromConfig(PlayerConfigData configData)
     {
         playerConfig = configData;
@@ -19,6 +26,10 @@ public class PlayerCha : MonoBehaviour
         currentHP = maxHP;
         currentEnergy = maxEnergy;
         energyRecoverRate = playerConfig.recoverRate;
+        chaUI.maxEnergy = maxEnergy;
+        chaUI.SetHPUI(currentHP);
+        chaUI.SetTargetEnergy(currentEnergy);
+        chaUI.nowEnergy = currentEnergy;
     }
     public void ChangeHP(int count)
     {
@@ -31,6 +42,7 @@ public class PlayerCha : MonoBehaviour
         {
             currentHP = 0;
         }
+        chaUI.SetHPUI(currentHP);
     }
     public void ChangeEnergy(float count)
     {
@@ -43,6 +55,7 @@ public class PlayerCha : MonoBehaviour
         {
             currentEnergy = 0;
         }
+        chaUI.SetTargetEnergy(currentEnergy);
     }
 
     public bool IsDead()

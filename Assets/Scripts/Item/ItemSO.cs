@@ -6,6 +6,7 @@ public enum ItemType
     Material,
     Tool,
     Container,
+    Weaoon, 
     Other//有其他需要之后再改
 }
 [CreateAssetMenu(

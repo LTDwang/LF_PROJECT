@@ -10,15 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 56a9536a57fab114fa2507e698fa804b, type: 3}
-  m_Name: testWeapon
+  m_Name: NewItem
   m_EditorClassIdentifier: 
-  id: 1
-  displayName: "\u6D4B\u8BD5\u6B66\u5668"
+  id: 
+  displayName: 
   description: 
-  icon: {fileID: 21300000, guid: 93e44b3c40293f4418d3945cb433ac88, type: 3}
-  itemType: 4
+  icon: {fileID: 0}
+  itemType: 0
   maxStack: 1
-  gridWidth: 3
+  gridWidth: 1
   gridHeight: 1
   canRotate: 1
   perishable: 0
