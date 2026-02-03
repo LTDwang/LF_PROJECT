@@ -30,6 +30,7 @@ public class Throwable : MonoBehaviour
         {
             col.isTrigger = false;
             rb.isKinematic = false;
+            Debug.Log("throwout false");
             Vector2 v = dir.normalized * speed;
             rb.velocity = v;
             rb.angularVelocity = Random.Range(1f, 5f);
@@ -42,10 +43,11 @@ public class Throwable : MonoBehaviour
         hasLanded = true;
         rb.velocity = Vector2.zero;
         rb.angularVelocity = 0;
-        rb.isKinematic = true;
+        //rb.isKinematic = true;
+        Debug.Log("落地设k");
         if (turnIntoTrigger)
         {
-            col.isTrigger = true;
+            //col.isTrigger = true;
         }
         //若落地后可交互，则启动实现了iinteractable的组件
         var all = GetComponents<MonoBehaviour>();

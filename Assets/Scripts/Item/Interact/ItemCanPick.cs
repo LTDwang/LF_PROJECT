@@ -10,6 +10,10 @@ public class ItemCanPick : MonoBehaviour, IPickupInteractable, IShortLongInterac
     private Transform _player; // 由触发器注入
     public string Prompt => prompt;
 
+    private void Update()
+    {
+        Debug.Log(GetComponent<Rigidbody2D>().velocity);
+    }
     private void OnEnable()
     {
         trigger = GetComponentInChildren<InteractableTrigger>();
@@ -60,6 +64,7 @@ public class ItemCanPick : MonoBehaviour, IPickupInteractable, IShortLongInterac
             rb.velocity = Vector2.zero;
             rb.angularVelocity = 0f;
             rb.bodyType = RigidbodyType2D.Kinematic;
+            Debug.Log("捡起设k");
         }
 
         var col = GetComponent<Collider2D>();
@@ -93,5 +98,10 @@ public class ItemCanPick : MonoBehaviour, IPickupInteractable, IShortLongInterac
         // 兜底：如果没拿到 Inventory，就先隐藏
         Debug.LogWarning("[Pickup-Long] 未找到 InventoryManager 或 item 为空，先隐藏物体");
         gameObject.SetActive(false);
+    }
+    public void SetFigure()
+    {
+        SpriteRenderer sprite = GetComponent<SpriteRenderer>();
+        sprite.sprite = item.icon;
     }
 }

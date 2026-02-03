@@ -10,9 +10,8 @@ public class DropSystem : MonoBehaviour
 
     public void Drop(ItemSO itemSO)
     {
-        GameObject item = Instantiate(prefab, dropPoint.transform.position, Quaternion.identity);
-        item.GetComponent<ItemCanPick>().item = itemSO; 
-        SpriteRenderer sprit = item.GetComponent<SpriteRenderer>();
-        sprit.sprite = itemSO.icon;
+        ItemCanPick item = Instantiate(prefab, dropPoint.transform.position, Quaternion.identity).GetComponent<ItemCanPick>();
+        item.item = itemSO;
+        item.SetFigure();
     }
 }
