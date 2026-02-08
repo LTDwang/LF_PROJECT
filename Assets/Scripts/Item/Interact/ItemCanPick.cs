@@ -12,7 +12,7 @@ public class ItemCanPick : MonoBehaviour, IPickupInteractable, IShortLongInterac
 
     private void Update()
     {
-        Debug.Log(GetComponent<Rigidbody2D>().velocity);
+        //Debug.Log(GetComponent<Rigidbody2D>().velocity);
     }
     private void OnEnable()
     {

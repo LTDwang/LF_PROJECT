@@ -6,7 +6,7 @@ public class GameManager : MonoBehaviour
 {
     [Header("Time Control")]
     [Tooltip("游戏时间流速，1.0为正常速度，0.5为半速，2.0为双倍速，0.0为暂停")]
-    public float gameTimeScale = 1.0f;
+    public float gameTimeScale = 0f;
 
     [Header("Player Management")]
     [Tooltip("当前场景中的玩家实例")]
@@ -181,5 +181,10 @@ public class GameManager : MonoBehaviour
         // 例如：重置物品、敌人、关卡进度等
         
         Debug.Log("GameManager: 关卡已重置");
+    }
+
+    public void SetTimeScale(float scale)
+    {
+        gameTimeScale = scale;
     }
 }
