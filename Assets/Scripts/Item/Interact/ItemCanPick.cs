@@ -90,9 +90,12 @@ public class ItemCanPick : MonoBehaviour, IPickupInteractable, IShortLongInterac
             if (inventory != null && item != null)
             {
                 inventory.PlaceNewItemWithNoPosition(item);
+                ItemManagement.Instance.CustomItem(item.id);
                 Destroy(gameObject);
+
                 return;
             }
+            
         }
 
         // 兜底：如果没拿到 Inventory，就先隐藏

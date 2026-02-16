@@ -17,6 +17,11 @@ public class QuickWheelSetSlot : MonoBehaviour
         if (controller.IsDraggingToBind())
         {
             var so = controller.inventoryGridView.DraggingItem;
+            if(!so.item.canQuickUse)
+            {
+                Debug.Log("这玩意不能快捷使用");
+                return;
+            }
             itemSO = so.item;
             if (itemSO == null)
             {
@@ -34,15 +39,10 @@ public class QuickWheelSetSlot : MonoBehaviour
             return;
         }
     }
-    public void test()
-    {
-        Debug.Log("111111");    
-    }
 
     private void Start()
     {
         button = GetComponent<Button>();
-        button.onClick.AddListener(test);
         button.onClick.AddListener(HandleSlotClicked);
     }
 }

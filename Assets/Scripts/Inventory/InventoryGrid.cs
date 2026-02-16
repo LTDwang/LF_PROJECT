@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -26,8 +27,8 @@ public class InventoryGrid : MonoBehaviour
     public IReadOnlyList<InventoryItem> Items => items;
     public int Width => width;
     public int Height => height;
-    
 
+    public event Action<ItemSO> OnCountChange;
     
     private void Start()
     {
@@ -223,6 +224,7 @@ public class InventoryGrid : MonoBehaviour
         {
             itemCount.Add(item, amount);
         }
+        OnCountChange?.Invoke(item);
     }
     public bool CountConsume(ItemSO item, int amount = 1)
     {
@@ -236,6 +238,7 @@ public class InventoryGrid : MonoBehaviour
             Debug.Log("用完了");
             itemCount.Remove(item);
         }
+        OnCountChange?.Invoke(item);
         return true;
     }
 

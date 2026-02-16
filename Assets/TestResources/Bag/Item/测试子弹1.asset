@@ -10,17 +10,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 56a9536a57fab114fa2507e698fa804b, type: 3}
-  m_Name: "\u5783\u573E"
+  m_Name: "\u6D4B\u8BD5\u5B50\u5F391"
   m_EditorClassIdentifier: 
-  id: 
+  id: "\u6D4B\u8BD5\u5B50\u5F391"
   displayName: 
   description: 
   icon: {fileID: 21300000, guid: 588edab47c3f48d40ba60e5a7e1a98ac, type: 3}
-  itemType: 1
+  itemType: 6
   maxStack: 1
   gridWidth: 1
   gridHeight: 1
   canRotate: 1
+  canQuickUse: 1
   perishable: 0
   shelfLifeSeconds: 0
   destroyWhenRotten: 1
@@ -39,3 +40,5 @@ MonoBehaviour:
   brokenResultItem: {fileID: 0}
   containerWidth: 1
   containerHeight: 1
+  validBullets: []
+  validWeapon: {fileID: 11400000, guid: 5dbcc74cb8e12e14db2cd2d24a691325, type: 2}

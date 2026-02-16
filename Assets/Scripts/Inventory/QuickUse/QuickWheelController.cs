@@ -34,6 +34,7 @@ public class QuickWheelController : MonoBehaviour
 
     public bool bagOpening = false;
 
+
     void Awake()
     {
         _model = new QuickWheelModel(slotCount);
@@ -45,6 +46,7 @@ public class QuickWheelController : MonoBehaviour
             view.Build();
             view.SetOpen(false);
         }
+    //    inventoryGrid.OnCountChange += Render;
     }
 
     void Update()
@@ -108,7 +110,14 @@ public class QuickWheelController : MonoBehaviour
             selectedIndex: _selectedIndex
         );
     }
-
+    private void Render(ItemSO item)
+    {
+        view.Render(
+            getItem: i => _model.GetItem(i),
+            getCount: item => inventoryGrid != null ? inventoryGrid.GetTotalCount(item) : 0,
+            selectedIndex: _selectedIndex
+        );
+    }
 
 
     public bool IsDraggingToBind()

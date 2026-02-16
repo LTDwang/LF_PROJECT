@@ -25,6 +25,7 @@ public class ItemManagement : MonoBehaviour//用来记录目前地图中有多少生成的对应i
         }
     }
     #endregion
+    [SerializeField]
     private Dictionary<string, int> itemCount = new Dictionary<string, int>();//用来记录目前地图中有多少生成的对应item
     public int maxCount = 5;//地图中单一物品最大数量
     public void ProductItem(string name,int count=1)
@@ -49,6 +50,7 @@ public class ItemManagement : MonoBehaviour//用来记录目前地图中有多少生成的对应i
                 itemCount.Remove(name);
             }
         }
+        Debug.Log("Customed");
     }
     public bool CanStillProduce(string name)
     {

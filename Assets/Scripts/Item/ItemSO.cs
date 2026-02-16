@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 public enum ItemType
 {
@@ -6,7 +7,9 @@ public enum ItemType
     Material,
     Tool,
     Container,
-    Weaoon, 
+    FarWeapon,
+    NearWeapon,
+    Bullet,
     Other//有其他需要之后再改
 }
 [CreateAssetMenu(
@@ -35,6 +38,8 @@ public class ItemSO : ScriptableObject
     [Min(1)] public int gridHeight = 1;
     public bool canRotate = true;
 
+    [Header("能否放进快捷栏")]
+    public bool canQuickUse = true;
     // =============== 腐败相关（时间） ===============
     [Header("腐败 / 变质设置")]
     [Tooltip("是否会随时间腐败（例如：生肉、熟食）")]
@@ -76,4 +81,12 @@ public class ItemSO : ScriptableObject
     [Header("容器大小（是制作界面的容器）")]
     [Min(1)] public int containerWidth = 1;
     [Min(1)] public int containerHeight = 1;
+    //==============若是远程武器=============
+    [Header("武器能用的子弹,第一个就是默认子弹")]
+    public List<ItemSO> validBullets;
+
+    //=============若是子弹==============
+    [Header("子弹对应的武器")]
+    public ItemSO validWeapon;
+    
 }

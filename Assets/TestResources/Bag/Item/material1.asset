@@ -21,6 +21,7 @@ MonoBehaviour:
   gridWidth: 1
   gridHeight: 1
   canRotate: 1
+  canQuickUse: 0
   perishable: 0
   shelfLifeSeconds: 0
   destroyWhenRotten: 1
@@ -39,3 +40,5 @@ MonoBehaviour:
   brokenResultItem: {fileID: 0}
   containerWidth: 1
   containerHeight: 1
+  validBullets: []
+  validWeapon: {fileID: 0}
