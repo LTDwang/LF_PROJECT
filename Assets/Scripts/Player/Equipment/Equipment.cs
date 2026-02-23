@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,8 +26,12 @@ public class Equipment : MonoBehaviour
     [Header("子弹")]
     public Dictionary<ItemSO, int> bulletsCount;
     public ItemSO currentBullet;
-    public int bulletCount=0;
 
+    [Header("现在在手上拿着的东西")]
+    public ItemSO inHand;
+
+    public ItemSO ItemInHand => inHand;
+    public ItemSO CurrentBullet => currentBullet;
     void Start()
     {
         longWeaponButton.onClick.AddListener(OnLongWeaponButtonClicked);
@@ -169,4 +174,5 @@ public class Equipment : MonoBehaviour
         bulletRender.BulletCountRefresh(count);
         bulletsCount[bullet] = count;
     }
+   
 }

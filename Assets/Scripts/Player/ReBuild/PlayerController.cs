@@ -19,7 +19,7 @@ public class PlayerController : MonoBehaviour
     [Header("Components")]
     private MovementController movementController;
     private ClimbController climbController;
-    private ThrowController throwController;
+    private ThrowAndFarAttackController throwController;
     private InputHandler inputHandler;
     private GroundChecker groundChecker;
     private PlayerInteraction playerInteraction;
@@ -35,7 +35,7 @@ public class PlayerController : MonoBehaviour
     {
         movementController = GetComponent<MovementController>();
         climbController = GetComponent<ClimbController>();
-        throwController = GetComponent<ThrowController>();
+        throwController = GetComponent<ThrowAndFarAttackController>();
         groundChecker = GetComponent<GroundChecker>();
         playerInteraction = GetComponent<PlayerInteraction>();
         inputHandler = GetComponent<InputHandler>();
@@ -236,11 +236,6 @@ public class PlayerController : MonoBehaviour
         inputHandler?.OnUseLeftHand(ctx);
     }
 
-    public void OnUseRightHand(InputAction.CallbackContext ctx)
-    {
-        inputHandler?.OnUseRightHand(ctx);
-    }
-
     public void OnOpenInventory()
     {
         inventoryOpen = true;
@@ -298,7 +293,10 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    public void FarAttackFire()
+    {
 
+    }
     public void EnterClimb(Transform anchor, Vector2 upDir, Vector2 rightDir, MonoBehaviour source)
     {
         if (climbController != null)

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class ThrowController : MonoBehaviour
+public class ThrowAndFarAttackController : MonoBehaviour
 {
     [Header("Hand")]
     public Transform leftHandPoint;
@@ -18,6 +18,12 @@ public class ThrowController : MonoBehaviour
     private Throwable throwableItem;
     private float faceDir = 1f;
 
+    [Header("其他系统")]
+    public InventoryGrid inventoryGrid;
+    public Equipment equipment;
+
+    [Header("子弹预制体")]
+    public GameObject bullet;
     public bool IsAiming => isAiming;
     public float FaceDir { set => faceDir = value; }
 
@@ -27,6 +33,7 @@ public class ThrowController : MonoBehaviour
         {
             aimLine.enabled = false;
         }
+        equipment = GetComponent<Equipment>();
     }
 
     public void BeginAim(bool useLeftHand)
@@ -89,7 +96,31 @@ public class ThrowController : MonoBehaviour
             aimLine.enabled = false;
         }
     }
+    public void FarAttack(Transform startPoint, Vector2 aimDir)
+    {
+        if (!isAiming)
+        {
+            return;
+        }
+        if (aimLine!=null)
+        {
+            aimLine.enabled = false;
+        }
+        if (inventoryGrid.GetTotalCount(equipment.CurrentBullet)==0)
+        {
+            Debug.Log("没子弹了");
+            isAiming = false;
+            return;
+        }
+        // 如果方向几乎为0，使用面向方向
+        if (aimDir.sqrMagnitude < 0.0001f)
+        {
+            aimDir = new Vector2(faceDir, 0f);
+        }
+        ItemSO bullet = equipment.currentBullet;
 
+        isAiming = false;
+    }
     private bool TryGetThrowableFromHand(bool useLeftHand, out Throwable throwable)
     {
         Transform handPoint = useLeftHand ? leftHandPoint : rightHandPoint;

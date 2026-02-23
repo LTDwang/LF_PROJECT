@@ -88,5 +88,8 @@ public class ItemSO : ScriptableObject
     //=============若是子弹==============
     [Header("子弹对应的武器")]
     public ItemSO validWeapon;
-    
+    public float flyingSpeed;
+    public bool ifDestroy;
+    public float lifeTime;
+    public float damage;
 }

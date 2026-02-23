@@ -371,7 +371,7 @@ public class MyPlayerInputEditor : Editor
             DrawKeyBinding("跳跃", serializedObject.FindProperty("jumpBinding"));
             DrawKeyBinding("左手使用", serializedObject.FindProperty("leftHandBinding"));
             DrawKeyBinding("右手使用", serializedObject.FindProperty("rightHandBinding"));
-            DrawKeyBinding("左手投掷", serializedObject.FindProperty("throwLeftBinding"));
+            DrawKeyBinding("左手投掷", serializedObject.FindProperty("throwBinding"));
             DrawKeyBinding("右手投掷", serializedObject.FindProperty("throwRightBinding"));
             DrawKeyBinding("打开背包", serializedObject.FindProperty("openInventoryBinding"));
             DrawKeyBinding("交互", serializedObject.FindProperty("interactBinding"));
