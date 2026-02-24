@@ -43,4 +43,12 @@ MonoBehaviour:
   validBullets:
   - {fileID: 11400000, guid: d3bf3fa0f378e83479e2a0bb26d7af1b, type: 2}
   - {fileID: 11400000, guid: d3bf3fa0f378e83479e2a0bb26d7af1b, type: 2}
+  originalSpeed: 12
+  maxSpeed: 100
+  chargeUpSpeed: 5
+  farAttackAction: {fileID: 11400000, guid: 3d2f0243bef283c48882f4574236223a, type: 2}
   validWeapon: {fileID: 0}
+  flyingSpeed: 0
+  ifDestroy: 0
+  lifeTime: 0
+  damage: 0

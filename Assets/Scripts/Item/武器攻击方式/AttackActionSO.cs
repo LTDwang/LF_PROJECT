@@ -10,7 +10,6 @@ public abstract class AttackActionSO : ScriptableObject
 public struct FarAttackContext
 {
     public GameObject attacker;
-    public Vector2 origin;
     public Vector2 direction;
     public LayerMask hitMask;
     public Transform startpoint;

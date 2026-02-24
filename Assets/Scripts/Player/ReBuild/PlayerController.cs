@@ -269,19 +269,33 @@ public class PlayerController : MonoBehaviour
     public void OnNoteHold(InputAction.CallbackContext ctx) { }
 
 
-    public void BeginAim(bool useLeftHand)
+    public void ThrowBeginAim(bool useLeftHand)
     {
         if (throwController != null)
         {
-            throwController.BeginAim(useLeftHand);
+            throwController.ThrowBeginAim(useLeftHand);
+        }
+    }
+    public void FarWeaponBeginAim()
+    {
+        if (throwController != null)
+        {
+            throwController.FarWeaponBeginAim();
         }
     }
 
-    public void UpdateAimDirection(Vector2 dirFromStick)
+    public void UpdateAimDirectionWithStick(Vector2 dirFromStick)
     {
         if (throwController != null)
         {
             throwController.UpdateAimDirection(dirFromStick);
+        }
+    }
+    public void UpdateAimDirectionWithMouse(InputAction.CallbackContext ctx)
+    {
+        if (throwController != null)
+        {
+            throwController.UpdateAimDirection(ctx);
         }
     }
 
@@ -295,7 +309,7 @@ public class PlayerController : MonoBehaviour
 
     public void FarAttackFire()
     {
-
+        throwController.FarAttack();
     }
     public void EnterClimb(Transform anchor, Vector2 upDir, Vector2 rightDir, MonoBehaviour source)
     {

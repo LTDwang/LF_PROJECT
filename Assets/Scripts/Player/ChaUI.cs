@@ -12,7 +12,7 @@ public class ChaUI : MonoBehaviour
 {
     [Header("ÎäÆ÷UI")]
     public Image shortWeapon;
-    public Image longWeapon;
+    public Image farWeapon;
 
     [Header("ÑªÌõUI")]
     public GameObject HPprefab;
@@ -51,7 +51,7 @@ public class ChaUI : MonoBehaviour
         }
         else
         {
-            longWeapon.sprite = weapon.icon;
+            farWeapon.sprite = weapon.icon;
             return;
         }
     }

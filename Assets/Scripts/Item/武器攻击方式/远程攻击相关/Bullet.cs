@@ -26,7 +26,7 @@ public class Bullet : MonoBehaviour
     [SerializeField]
     float aliveTime = 0;
 
-    public void Init(GameObject attacker,bool ifDestroy,float lifeTime,Vector2 dir,float originalSpeed,float damage,LayerMask hitMask)
+    public void Init( ItemSO bullet,GameObject attacker,bool ifDestroy,float lifeTime,Vector2 dir,float originalSpeed,float damage,LayerMask hitMask)
     {
         this.attacker = attacker;
         this.ifDestroy = ifDestroy;
@@ -35,7 +35,8 @@ public class Bullet : MonoBehaviour
         this.originalSpeed = originalSpeed;
         this.damage = damage;
         this.hitMask = hitMask;
-        speed = originalSpeed * dir;
+        speed = originalSpeed * dir.normalized;
+        GetComponent<SpriteRenderer>().sprite = bullet.icon;
     }
     // Start is called before the first frame update
     void Start()
@@ -57,7 +58,7 @@ public class Bullet : MonoBehaviour
         Vector2 pos = transform.position;
         Vector2 dis = speed * deltaTime;
         float dist = dis.magnitude;
-        speed += new Vector2(0, -9.81f) * deltaTime;
+        speed +=  Physics2D.gravity * deltaTime;
         if (dist>0f)
         {
             RaycastHit2D hit = Physics2D.CircleCast(pos, radius, dis, dist, hitMask);

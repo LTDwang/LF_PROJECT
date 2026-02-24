@@ -15,15 +15,16 @@ public class FarAttack : AttackActionSO
 
     public override void Excute(ItemSO bullet,ItemSO weaponItem, FarAttackContext ctx, GameObject prefeb )
     {
+        
         if (prefeb == null)
         {
             return;
-        }
+        }Debug.Log("excute");
         var go = Instantiate(prefeb, ctx.startpoint.position,Quaternion.identity);
         Bullet _bullet = go.GetComponent<Bullet>();
         if (_bullet!=null)
         {
-            _bullet.Init(ctx.attacker, bullet.ifDestroy, bullet.lifeTime, ctx.direction, ctx.flyingSpeed, bullet.damage, ctx.hitMask);
+            _bullet.Init(bullet,ctx.attacker, bullet.ifDestroy, bullet.lifeTime, ctx.direction, ctx.flyingSpeed, bullet.damage, ctx.hitMask);
         }
     }
 }

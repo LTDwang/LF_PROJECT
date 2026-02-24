@@ -2975,6 +2975,7 @@ GameObject:
   - component: {fileID: 896699259}
   - component: {fileID: 896699260}
   - component: {fileID: 896699261}
+  - component: {fileID: 896699262}
   m_Layer: 7
   m_Name: player
   m_TagString: Player
@@ -3145,10 +3146,15 @@ MonoBehaviour:
   leftHandBinding:
     keyboardBinding: <Keyboard>/q
     gamepadBinding: <Gamepad>/leftShoulder
-  throwLeftBinding:
+  throwBinding:
     keyboardBinding: <Keyboard>/o
     gamepadBinding: <Gamepad>/leftTrigger
-  aimStickBinding: <Gamepad>/rightStick
+  farAttackBinding:
+    keyboardBinding: <Mouse>/leftButton
+    gamepadBinding: 
+  aimStickBinding:
+    keyboardBinding: <Mouse>/position
+    gamepadBinding: <Gamepad>/rightStick
   aimDeadzoneMin: 0.25
   openInventoryBinding:
     keyboardBinding: <Keyboard>/tab
@@ -3335,15 +3341,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 56323f731e5074c42af2d195641fa991, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  longWeaponButton: {fileID: 217379876}
+  farWeaponButton: {fileID: 217379876}
   shortWeaponButton: {fileID: 591584466}
-  longWeaponIcon: {fileID: 1595229977}
+  farWeaponIcon: {fileID: 1595229977}
   shortWeaponIcon: {fileID: 3076321874478653884}
-  bullet: {fileID: 0}
+  bullet: {fileID: 1552309883}
   InventoryGridView: {fileID: 2856818940934820560}
   InventoryGrid: {fileID: 6320293642968544873}
   bulletRender: {fileID: 939852946}
-  longWeapon:
+  farWeapon:
     item: {fileID: 0}
     count: 0
     originX: 0
@@ -3356,7 +3362,31 @@ MonoBehaviour:
     originY: 0
     rotated: 0
   currentBullet: {fileID: 0}
-  bulletCount: 0
+  inHand: {fileID: 0}
+--- !u!114 &896699262
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 896699245}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cedcb21eebc8c384486d32d7d6242ef6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  leftHandPoint: {fileID: 1561369177}
+  rightHandPoint: {fileID: 1561369177}
+  throwSpeed: 12
+  chargeUpSpeed: 0
+  maxSpeed: 12
+  aimLine: {fileID: 425460310}
+  lineSegments: 20
+  lineTimeStep: 0.05
+  inventoryGrid: {fileID: 6320293642968544873}
+  equipment: {fileID: 896699261}
+  bulletPre: {fileID: 8699210293552160920, guid: 4cfee26a1cd5ee5479aad5e9c02a0494, type: 3}
+  farWeaponStartPoint: {fileID: 1561369177}
 --- !u!1 &928538103
 GameObject:
   m_ObjectHideFlags: 0
@@ -3759,7 +3789,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   shortWeapon: {fileID: 3076321874478653884}
-  longWeapon: {fileID: 1595229977}
+  farWeapon: {fileID: 0}
   HPprefab: {fileID: 1664422686773020247, guid: 59cea9300c620444587750e941bf8fd1, type: 3}
   HProot: {fileID: 2084076384}
   energyUI: {fileID: 693495597}

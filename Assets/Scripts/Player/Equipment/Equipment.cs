@@ -8,10 +8,10 @@ using UnityEngine.UI;
 public class Equipment : MonoBehaviour
 {
     [Header("背包ui")]
-    public Button longWeaponButton;
+    public Button farWeaponButton;
     public Button shortWeaponButton;
     [Header("装备ui")]
-    public Image longWeaponIcon;
+    public Image farWeaponIcon;
     public Image shortWeaponIcon;
     public Image bullet;
 
@@ -21,7 +21,7 @@ public class Equipment : MonoBehaviour
     public BulletRender bulletRender;
 
     [Header("逻辑装备")]
-    public InventoryItem longWeapon;
+    public InventoryItem farWeapon;
     public InventoryItem shortWeapon;
     [Header("子弹")]
     public Dictionary<ItemSO, int> bulletsCount;
@@ -34,13 +34,13 @@ public class Equipment : MonoBehaviour
     public ItemSO CurrentBullet => currentBullet;
     void Start()
     {
-        longWeaponButton.onClick.AddListener(OnLongWeaponButtonClicked);
+        farWeaponButton.onClick.AddListener(OnfarWeaponButtonClicked);
         shortWeaponButton.onClick.AddListener(OnShortWeaponButtonClicked);
         bulletsCount = new Dictionary<ItemSO, int>();
         InventoryGrid.OnCountChange += RefreshBulletsCount;
     }
 
-    void OnLongWeaponButtonClicked()
+    void OnfarWeaponButtonClicked()
     {
         if (!InventoryGridView.IsDraggingItem)
         {
@@ -57,7 +57,7 @@ public class Equipment : MonoBehaviour
             Debug.Log("这个装备在另外一个武器栏了");
             return;
         }
-        longWeapon = item;
+        farWeapon = item;
         Debug.Log($"装备{item.item.id}");
         SetLongIcon(item.item.icon);
         InventoryGridView.StopDrag();
@@ -65,7 +65,7 @@ public class Equipment : MonoBehaviour
         InventoryGridView.RefreshAllItems();
         bulletsCount.Clear();
         //统计各个子弹数量
-        foreach (var bullet in longWeapon.item.validBullets)
+        foreach (var bullet in farWeapon.item.validBullets)
         {
             if (bullet==null)
             {
@@ -94,7 +94,7 @@ public class Equipment : MonoBehaviour
             Debug.Log("不是近程武器");
             return;
         }
-        if (item == longWeapon)
+        if (item == farWeapon)
         {
             Debug.Log("这个装备在另外一个武器栏了");
             return;
@@ -107,8 +107,8 @@ public class Equipment : MonoBehaviour
     }
     public void SetLongIcon(Sprite sprite)
     {
-        longWeaponButton.image.sprite = sprite;
-        longWeaponIcon.sprite = sprite;
+        farWeaponButton.image.sprite = sprite;
+        farWeaponIcon.sprite = sprite;
     }
     public void SetShortIcon(Sprite sprite)
     {
@@ -121,12 +121,12 @@ public class Equipment : MonoBehaviour
         {
             return;
         }
-        if (longWeapon == null)
+        if (farWeapon == null)
         {
             Debug.Log("没装远程武器");
             return;
         }
-        if (longWeapon.item != item.validWeapon)
+        if (farWeapon.item != item.validWeapon)
         {
             Debug.Log("子弹不适配");
             return;
@@ -136,11 +136,11 @@ public class Equipment : MonoBehaviour
     }
     private void SelectDefaultBullet()
     {
-        if (longWeapon == null)
+        if (farWeapon == null)
         {
             return;
         }
-        var valid = longWeapon.item.validBullets;
+        var valid = farWeapon.item.validBullets;
         if (valid == null || valid.Count == 0)
         {
             SetBullet(null);
@@ -166,7 +166,7 @@ public class Equipment : MonoBehaviour
     }
     void RefreshBulletsCount(ItemSO bullet)
     {
-        if (bullet.itemType!=ItemType.Bullet||longWeapon.item==null||!longWeapon.item.validBullets.Contains(bullet))
+        if (bullet.itemType!=ItemType.Bullet||farWeapon.item==null||!farWeapon.item.validBullets.Contains(bullet))
         {
             return;
         }
