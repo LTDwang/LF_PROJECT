@@ -370,13 +370,14 @@ public class MyPlayerInputEditor : Editor
             // 绘制其他按键绑定
             DrawKeyBinding("跳跃", serializedObject.FindProperty("jumpBinding"));
             DrawKeyBinding("左手使用", serializedObject.FindProperty("leftHandBinding"));
-            DrawKeyBinding("右手使用", serializedObject.FindProperty("rightHandBinding"));
+            // DrawKeyBinding("右手使用", serializedObject.FindProperty("rightHandBinding")); // 属性不存在
             DrawKeyBinding("左手投掷", serializedObject.FindProperty("throwLeftBinding"));
-            DrawKeyBinding("右手投掷", serializedObject.FindProperty("throwRightBinding"));
+            // DrawKeyBinding("右手投掷", serializedObject.FindProperty("throwRightBinding")); // 属性不存在
             DrawKeyBinding("打开背包", serializedObject.FindProperty("openInventoryBinding"));
             DrawKeyBinding("交互", serializedObject.FindProperty("interactBinding"));
-            DrawKeyBinding("记事短按", serializedObject.FindProperty("quickPickTapBinding"));
-            DrawKeyBinding("记事长按", serializedObject.FindProperty("pickHoldBinding"));
+            // DrawKeyBinding("记事短按", serializedObject.FindProperty("quickPickTapBinding")); // 属性不存在，可能应该使用 pickUpBinding
+            // DrawKeyBinding("记事长按", serializedObject.FindProperty("pickHoldBinding")); // 属性不存在
+            DrawKeyBinding("拾取", serializedObject.FindProperty("pickUpBinding")); // 使用存在的属性
 
             // 绘制瞄准摇杆绑定
             DrawStringBinding("瞄准摇杆", serializedObject.FindProperty("aimStickBinding"));
@@ -481,27 +482,62 @@ public class MyPlayerInputEditor : Editor
     /// </summary>
     private void DrawKeyBinding(string label, SerializedProperty property)
     {
+        // 检查property是否为null（属性不存在时）
+        if (property == null)
+        {
+            EditorGUILayout.HelpBox($"警告: 属性 '{label}' 不存在于目标对象中", MessageType.Warning);
+            return;
+        }
+
         EditorGUILayout.LabelField(label, EditorStyles.boldLabel);
         EditorGUI.indentLevel++;
 
+        // 获取keyboardBinding子属性
+        SerializedProperty keyboardProp = property.FindPropertyRelative("keyboardBinding");
+        if (keyboardProp == null)
+        {
+            EditorGUILayout.HelpBox($"警告: 无法找到 'keyboardBinding' 子属性", MessageType.Warning);
+            EditorGUI.indentLevel--;
+            EditorGUILayout.Space(3);
+            return;
+        }
+
         EditorGUILayout.BeginHorizontal();
         EditorGUILayout.LabelField("键盘", GUILayout.Width(50));
-        EditorGUILayout.PropertyField(property.FindPropertyRelative("keyboardBinding"), GUIContent.none);
+        EditorGUILayout.PropertyField(keyboardProp, GUIContent.none);
         if (GUILayout.Button("绑定", GUILayout.Width(60)))
         {
             StartListening($"{label}-键盘", (path) => {
-                property.FindPropertyRelative("keyboardBinding").stringValue = path;
+                SerializedProperty prop = property.FindPropertyRelative("keyboardBinding");
+                if (prop != null)
+                {
+                    prop.stringValue = path;
+                }
             }, InputDeviceType.Keyboard);
         }
         EditorGUILayout.EndHorizontal();
 
+        // 获取gamepadBinding子属性
+        SerializedProperty gamepadProp = property.FindPropertyRelative("gamepadBinding");
+        if (gamepadProp == null)
+        {
+            EditorGUILayout.HelpBox($"警告: 无法找到 'gamepadBinding' 子属性", MessageType.Warning);
+            EditorGUI.indentLevel--;
+            EditorGUILayout.Space(3);
+            return;
+        }
+
         EditorGUILayout.BeginHorizontal();
         EditorGUILayout.LabelField("手柄", GUILayout.Width(50));
-        EditorGUILayout.PropertyField(property.FindPropertyRelative("gamepadBinding"), GUIContent.none);
+        EditorGUILayout.PropertyField(gamepadProp, GUIContent.none);
         if (GUILayout.Button("绑定", GUILayout.Width(60)))
         {
             StartListening($"{label}-手柄", (path) => {
-                property.FindPropertyRelative("gamepadBinding").stringValue = path;
+                SerializedProperty prop = property.FindPropertyRelative("gamepadBinding");
+                if (prop != null)
+                {
+                    prop.stringValue = path;
+                }
             }, InputDeviceType.Gamepad);
         }
         EditorGUILayout.EndHorizontal();
@@ -515,6 +551,13 @@ public class MyPlayerInputEditor : Editor
     /// </summary>
     private void DrawStringBinding(string label, SerializedProperty property)
     {
+        // 检查property是否为null（属性不存在时）
+        if (property == null)
+        {
+            EditorGUILayout.HelpBox($"警告: 属性 '{label}' 不存在于目标对象中", MessageType.Warning);
+            return;
+        }
+
         EditorGUILayout.LabelField(label, EditorStyles.boldLabel);
         EditorGUI.indentLevel++;
 
@@ -523,7 +566,10 @@ public class MyPlayerInputEditor : Editor
         if (GUILayout.Button("绑定手柄", GUILayout.Width(80)))
         {
             StartListening($"{label}", (path) => {
-                property.stringValue = path;
+                if (property != null)
+                {
+                    property.stringValue = path;
+                }
             }, InputDeviceType.Gamepad);
         }
         EditorGUILayout.EndHorizontal();

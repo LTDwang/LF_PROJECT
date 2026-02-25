@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(Animator))]
 public class PlayerAniControl : MonoBehaviour
 {
     [SerializeField] private Animator animator;
@@ -13,17 +12,17 @@ public class PlayerAniControl : MonoBehaviour
     public string pSpeed = "Speed";
     public string pVSpeed = "VSpeed";         // float
     public string pGrounded = "Grounded";     // bool
-    public string pCrouching = "Crouching";   // bool (¿É¿Õ)
-    public string pJumping = "Jumping";       // bool (¿É¿Õ)
+    public string pCrouching = "Crouching";   // bool (ï¿½É¿ï¿½)
+    public string pJumping = "Jumping";       // bool (ï¿½É¿ï¿½)
     public string pDashing = "Dashing";       // bool
-    public string pClimbing = "Climbing";     // bool (¿É¿Õ)
-    public string pAiming = "Aiming";         // bool (¿É¿Õ)
+    public string pClimbing = "Climbing";     // bool (ï¿½É¿ï¿½)
+    public string pAiming = "Aiming";         // bool (ï¿½É¿ï¿½)
 
     [Header("Animator Triggers")]
-    public string tJump = "Jump";             // trigger (¿É¿Õ)
-    public string tLand = "Land";             // trigger (¿É¿Õ)
-    public string tDash = "Dash";             // trigger (¿É¿Õ)
-    public string tThrow = "Throw";           // trigger (¿É¿Õ)
+    public string tJump = "Jump";             // trigger (ï¿½É¿ï¿½)
+    public string tLand = "Land";             // trigger (ï¿½É¿ï¿½)
+    public string tDash = "Dash";             // trigger (ï¿½É¿ï¿½)
+    public string tThrow = "Throw";           // trigger (ï¿½É¿ï¿½)
 
     private bool prevGrounded;
     private bool prevDashing;
@@ -32,7 +31,7 @@ public class PlayerAniControl : MonoBehaviour
 
     private void Awake()
     {
-        if (!animator) animator = GetComponent<Animator>();
+        if (!animator) animator = GetComponentInChildren<Animator>();
         if (!movement) movement = GetComponent<MovementController>();
         if (!player) player = GetComponent<PlayerController>();
 
@@ -57,7 +56,7 @@ public class PlayerAniControl : MonoBehaviour
         bool climbing = player != null && player.IsClimbing;
         bool aiming = player != null && player.IsAiming;
 
-        // ---- Ð´²ÎÊý£¨³ÖÐøÌ¬£©----
+        // ---- Ð´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ì¬ï¿½ï¿½----
         SetFloat(pSpeed, speed);
         SetFloat(pVSpeed, vSpeed);
 
@@ -69,7 +68,7 @@ public class PlayerAniControl : MonoBehaviour
         SetBool(pClimbing, climbing);
         SetBool(pAiming, aiming);
 
-        // ---- ´¥·¢Æ÷£¨Ë²¼äÌ¬£ºÓÃ±ßÑØ±ä»¯´¥·¢Ò»´Î£©----
+        // ---- ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ë²ï¿½ï¿½Ì¬ï¿½ï¿½ï¿½Ã±ï¿½ï¿½Ø±ä»¯ï¿½ï¿½ï¿½ï¿½Ò»ï¿½Î£ï¿½----
         if (!prevJumping && jumping) Trigger(tJump);
         if (!prevGrounded && grounded) Trigger(tLand);
         if (!prevDashing && dashing) Trigger(tDash);
