@@ -84,9 +84,15 @@ public class ItemSO : ScriptableObject
     //==============若是远程武器=============
     [Header("武器能用的子弹,第一个就是默认子弹")]
     public List<ItemSO> validBullets;
-
+    public float originalSpeed;
+    public float maxSpeed;
+    public float chargeUpSpeed;
+    public AttackActionSO farAttackAction;
     //=============若是子弹==============
     [Header("子弹对应的武器")]
     public ItemSO validWeapon;
-    
+    public float flyingSpeed;
+    public bool ifDestroy;
+    public float lifeTime;
+    public float damage;
 }

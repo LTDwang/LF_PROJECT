@@ -1,11 +1,15 @@
 using UnityEngine;
-
-public class ThrowController : MonoBehaviour
+using UnityEngine.InputSystem;
+public class ThrowAndFarAttackController : MonoBehaviour
 {
     [Header("Hand")]
     public Transform leftHandPoint;
     public Transform rightHandPoint;
+
+    [Header("飞出速度相关")]
     public float throwSpeed = 12f;
+    public float chargeUpSpeed = 0f;
+    public float maxSpeed = 12f;
 
     [Header("Aim Line")]
     public LineRenderer aimLine;
@@ -18,6 +22,14 @@ public class ThrowController : MonoBehaviour
     private Throwable throwableItem;
     private float faceDir = 1f;
 
+    [Header("其他系统")]
+    public InventoryGrid inventoryGrid;
+    public Equipment equipment;
+
+    [Header("子弹预制体")]
+    public GameObject bulletPre;
+    [Header("远程武器发射点")]
+    public Transform farWeaponStartPoint;
     public bool IsAiming => isAiming;
     public float FaceDir { set => faceDir = value; }
 
@@ -27,18 +39,40 @@ public class ThrowController : MonoBehaviour
         {
             aimLine.enabled = false;
         }
+        equipment = GetComponent<Equipment>();
+        
     }
-
-    public void BeginAim(bool useLeftHand)
+    private void FixedUpdate()
+    {
+        if (isAiming&&maxSpeed-throwSpeed>=0.1f)
+        {
+            throwSpeed += GameManager.ScaledFixedDeltaTime * chargeUpSpeed;
+        }
+        if (isAiming)
+        {
+            DrawAimArc(currentAimDir);
+        }
+    }
+    public void ThrowBeginAim(bool useLeftHand)
     {
         // 检查是否可以投掷
-        if (!TryGetThrowableFromHand(useLeftHand, out throwableItem))
-        {
-            return;
+        if (!TryGetThrowableFromHand(useLeftHand, out throwableItem) )
+        {   
+            //Debug.Log($"{equipment.farWeapon.item.id}");
+            if (equipment.farWeapon.item == null)
+            {
+                return;
+            }
+            else if (equipment.bulletsCount[equipment.currentBullet] == 0)
+            {
+                return;
+            }
         }
+        if (equipment.farWeapon.item)
+        {
 
+        }
         isAiming = true;
-        leftAiming = useLeftHand;
 
         // 初始化方向
         if (currentAimDir.sqrMagnitude < 0.0001f)
@@ -54,7 +88,36 @@ public class ThrowController : MonoBehaviour
 
         DrawAimArc(currentAimDir);
     }
+    public void FarWeaponBeginAim()
+    {
+        if (equipment.farWeapon.item == null)
+        {
+            return;
+        }
+        else if (equipment.bulletsCount[equipment.currentBullet] == 0)
+        {
+            return;
+        }
 
+        isAiming = true;
+        var weapon = equipment.farWeapon.item;
+        throwSpeed = weapon.originalSpeed;
+        chargeUpSpeed = weapon.chargeUpSpeed;
+        maxSpeed = weapon.maxSpeed;
+        // 初始化方向
+        if (currentAimDir.sqrMagnitude < 0.0001f)
+        {
+            currentAimDir = new Vector2(faceDir, 0f);
+        }
+
+        // 显示瞄准线
+        if (aimLine != null)
+        {
+            aimLine.enabled = true;
+        }
+
+        DrawAimArc(currentAimDir);
+    }
     public void UpdateAimDirection(Vector2 dirFromStick)
     {
         if (dirFromStick.sqrMagnitude > 0.0001f)
@@ -62,12 +125,20 @@ public class ThrowController : MonoBehaviour
             currentAimDir = dirFromStick.normalized;
         }
 
-        if (isAiming)
-        {
-            DrawAimArc(currentAimDir);
-        }
-    }
 
+    }
+    public void UpdateAimDirection(InputAction.CallbackContext mouseCallback)
+    {
+        if (!isAiming)
+        {
+            return;
+        }
+        Vector2 screen = mouseCallback.ReadValue<Vector2>();
+        var cam = Camera.main;
+        Vector2 startPoint = farWeaponStartPoint.position;
+        Vector2 mousePositon = cam.ScreenToWorldPoint(new Vector3(screen.x, screen.y, 0f));
+        currentAimDir = mousePositon - startPoint;
+    }
     public void ReleaseAim()
     {
         if (!isAiming) return;
@@ -89,7 +160,42 @@ public class ThrowController : MonoBehaviour
             aimLine.enabled = false;
         }
     }
+    public void FarAttack()
+    {
+        isAiming = false;
+        leftAiming = false;
+        if (equipment == null || equipment.farWeapon.item == null)
+        {
+            Debug.Log("没装备远程武器");
+            return;
+        }
+        if (equipment.farWeapon.item.itemType != ItemType.FarWeapon)
+        {
+            return;
+        }
+        ItemSO bullet = equipment.currentBullet;
+        ItemSO weapon = equipment.farWeapon.item;
+        if (inventoryGrid.GetTotalCount(bullet)==0)
+        {
+            Debug.Log("没子弹了");
+            return;
+        }
+        FarAttackContext ctx = new FarAttackContext
+        {
+            attacker = gameObject,
+            direction = currentAimDir,
+            startpoint = farWeaponStartPoint,
+            flyingSpeed = throwSpeed,
+        };
+        weapon.farAttackAction.Excute(bullet, weapon, ctx, bulletPre);
 
+        if (aimLine != null)
+        {
+            aimLine.enabled = false;
+        }
+        inventoryGrid.TryConsumeOne(bullet);
+        //weapon.farAttackAction.Excute(bullet,weapon,)
+    }
     private bool TryGetThrowableFromHand(bool useLeftHand, out Throwable throwable)
     {
         Transform handPoint = useLeftHand ? leftHandPoint : rightHandPoint;

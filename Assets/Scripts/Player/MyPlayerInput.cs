@@ -55,7 +55,7 @@ public class MyPlayerInput : MonoBehaviour
 
     [Header("基础动作配置")]
     [Tooltip("跳跃按键绑定")]
-    public KeyBinding jumpBinding = new KeyBinding { keyboardBinding = "<Keyboard>/space", gamepadBinding = "<Gamepad>/buttonSouth" };
+    public KeyBinding jumpBinding = new KeyBinding { keyboardBinding = "<Mouse>/leftButton", gamepadBinding = "<Gamepad>/buttonSouth" };
 
     [Tooltip("冲刺按键绑定")]
     public KeyBinding dashBingding = new KeyBinding { keyboardBinding = "<Keyboard>/leftShift", gamepadBinding = "<Gamepad>/bottonWest" };
@@ -66,10 +66,13 @@ public class MyPlayerInput : MonoBehaviour
     
     [Header("投掷和瞄准配置")]
     [Tooltip("左手投掷按键绑定")]
-    public KeyBinding throwLeftBinding = new KeyBinding { keyboardBinding = "<Keyboard>/o", gamepadBinding = "<Gamepad>/leftTrigger" };
+    public KeyBinding throwBinding = new KeyBinding { keyboardBinding = "<Keyboard>/o", gamepadBinding = "<Gamepad>/leftTrigger" };
+
+    [Header("远程武器使用")]//暂时只有鼠标绑定，手柄绑定之后再想想
+    public KeyBinding farAttackBinding = new KeyBinding { keyboardBinding = "<Mouse>/leftButton" };
     
-    [Tooltip("瞄准摇杆（手柄右摇杆）")]
-    public string aimStickBinding = "<Gamepad>/rightStick";
+    [Tooltip("瞄准摇杆（手柄右摇杆）,鼠标")]
+    public KeyBinding aimStickBinding = new KeyBinding { keyboardBinding = "<Mouse>/position", gamepadBinding= "<Gamepad>/rightStick" };
     
     [Tooltip("瞄准摇杆死区最小值")]
     [Range(0f, 1f)]
@@ -101,8 +104,10 @@ public class MyPlayerInput : MonoBehaviour
 
     // 使用/投掷/瞄准     
     private InputAction leftHand;
-    private InputAction throwLeft;
+    private InputAction throwAway;
     private InputAction aimStick;
+    private InputAction farAttack;
+    private InputAction aimPointerPos;
 
     // 系统与交互
     private InputAction openInventory;
@@ -142,6 +147,7 @@ public class MyPlayerInput : MonoBehaviour
         SetupInteraction();
         SetupPickUp();
         SetupDash();
+        SetupFarAttack();
     }
 
     private void OnEnable() 
@@ -254,35 +260,59 @@ public class MyPlayerInput : MonoBehaviour
     /// </summary>
     private void SetupThrowAndAim()
     {
+        
         // 右摇杆瞄准，加入 deadzone 处理
         aimStick = map.AddAction("Aim", InputActionType.Value);
         aimStick.expectedControlType = "Vector2";
-        
-        if (!string.IsNullOrEmpty(aimStickBinding))
+        //鼠标瞄准
+        aimPointerPos = map.AddAction("AimPointerPos", InputActionType.Value);
+        aimPointerPos.expectedControlType = "Vector2";
+
+
+        if (!string.IsNullOrEmpty(aimStickBinding.gamepadBinding))
         {
-            var binding = aimStick.AddBinding(aimStickBinding);
+            var binding = aimStick.AddBinding(aimStickBinding.gamepadBinding);
             binding.WithProcessor($"stickDeadzone(min={aimDeadzoneMin})");
         }
+        if (!string.IsNullOrEmpty(aimStickBinding.keyboardBinding))
+        {
+            aimPointerPos.AddBinding(aimStickBinding.keyboardBinding);
+        }
 
-        System.Action<InputAction.CallbackContext> aimChanged = OnAimChanged;
-        aimStick.performed += aimChanged;
-        aimStick.canceled += aimChanged;
+        System.Action<InputAction.CallbackContext> aimChangedByStick = OnAimChangedByStick;
+        aimStick.performed += aimChangedByStick;
+        aimStick.canceled += aimChangedByStick;
+        System.Action<InputAction.CallbackContext> aimChangedByMouse = OnAimChangedByMouse;
+        aimPointerPos.performed += aimChangedByMouse;
+        aimPointerPos.canceled += aimChangedByMouse;
 
-        unbindActions.Add(() => { aimStick.performed -= aimChanged; aimStick.canceled -= aimChanged; });
+        unbindActions.Add(() => { aimStick.performed -= aimChangedByStick; aimStick.canceled -= aimChangedByStick; });
 
-        // 左右投掷
-        throwLeft = map.AddAction("ThrowLeft", InputActionType.Button);
-        AddBindingToAction(throwLeft, throwLeftBinding);
+        // 投掷
+        throwAway = map.AddAction("throwAway", InputActionType.Button);
+        AddBindingToAction(throwAway, throwBinding);
 
-        System.Action<InputAction.CallbackContext> leftStarted = OnThrowLeftStarted;
-        System.Action<InputAction.CallbackContext> leftCanceled = OnThrowLeftCanceled;
+        System.Action<InputAction.CallbackContext> leftStarted = ThrowAimingStarted;
+        System.Action<InputAction.CallbackContext> leftCanceled = OnthrowAwayCanceled;
 
-        throwLeft.started += leftStarted;
-        throwLeft.canceled += leftCanceled;
+        throwAway.started += leftStarted;
+        throwAway.canceled += leftCanceled;
 
-        unbindActions.Add(() => { throwLeft.started -= leftStarted; throwLeft.canceled -= leftCanceled; });
+        unbindActions.Add(() => { throwAway.started -= leftStarted; throwAway.canceled -= leftCanceled; });
     }
+    ///<summary>
+    ///设置远程攻击输入
+    /// </summary>
+    public void SetupFarAttack()
+    {
+        farAttack = map.AddAction("FarAttack", InputActionType.Button);
+        AddBindingToAction(farAttack, farAttackBinding);
+        Action<InputAction.CallbackContext> startAiming = FarWeaponAimingStarted;
+        Action<InputAction.CallbackContext> fire = OnFarAttackCanceled;
 
+        farAttack.started += startAiming;
+        farAttack.canceled += fire;
+    }
     ///<summary>
     ///设置冲刺输入
     ///</summary>
@@ -380,28 +410,45 @@ public class MyPlayerInput : MonoBehaviour
     }
 
 
-    private void OnAimChanged(InputAction.CallbackContext ctx)
+    private void OnAimChangedByStick(InputAction.CallbackContext ctx)
     {
+
         Vector2 v = ctx.ReadValue<Vector2>();
         if (v.sqrMagnitude > 0.0001f)
             aimDir = v.normalized;
 
-        controller.UpdateAimDirection(aimDir);
+        controller.UpdateAimDirectionWithStick(aimDir);
     }
-
-    private void OnThrowLeftStarted(InputAction.CallbackContext ctx)
+    private void OnAimChangedByMouse(InputAction.CallbackContext ctx)
     {
+        controller.UpdateAimDirectionWithMouse(ctx);
+    }
+    private void ThrowAimingStarted(InputAction.CallbackContext ctx)
+    {
+        Debug.Log("瞄准");
         if (handBusy) return;
         handBusy = true;
-        controller.BeginAim(true); // 左手开始瞄准
+        controller.ThrowBeginAim(true); // 开始瞄准
     }
-
-    private void OnThrowLeftCanceled(InputAction.CallbackContext ctx)
+    private void FarWeaponAimingStarted(InputAction.CallbackContext ctx)
     {
-        controller.ReleaseAim(ctx); // 左手释放投掷
+        Debug.Log("瞄准");
+        if (handBusy) return;
+        handBusy = true;
+        controller.FarWeaponBeginAim(); // 开始瞄准
+    }
+    private void OnthrowAwayCanceled(InputAction.CallbackContext ctx)
+    {
+        controller.ReleaseAim(ctx); // 释放投掷
         handBusy = false;
     }
 
+    private void OnFarAttackCanceled(InputAction.CallbackContext ctx)
+    {
+        Debug.Log("fire");
+        controller.FarAttackFire();
+        handBusy = false;
+    }
     private void OnOpenInventoryPerformed(InputAction.CallbackContext ctx)
     {
         if (ctx.performed)

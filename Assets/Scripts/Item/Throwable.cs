@@ -44,7 +44,6 @@ public class Throwable : MonoBehaviour
         rb.velocity = Vector2.zero;
         rb.angularVelocity = 0;
         //rb.isKinematic = true;
-        Debug.Log("落地设k");
         if (turnIntoTrigger)
         {
             //col.isTrigger = true;

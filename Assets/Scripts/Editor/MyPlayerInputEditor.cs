@@ -370,9 +370,9 @@ public class MyPlayerInputEditor : Editor
             // 绘制其他按键绑定
             DrawKeyBinding("跳跃", serializedObject.FindProperty("jumpBinding"));
             DrawKeyBinding("左手使用", serializedObject.FindProperty("leftHandBinding"));
-            // DrawKeyBinding("右手使用", serializedObject.FindProperty("rightHandBinding")); // 属性不存在
-            DrawKeyBinding("左手投掷", serializedObject.FindProperty("throwLeftBinding"));
-            // DrawKeyBinding("右手投掷", serializedObject.FindProperty("throwRightBinding")); // 属性不存在
+            DrawKeyBinding("右手使用", serializedObject.FindProperty("rightHandBinding"));
+            DrawKeyBinding("左手投掷", serializedObject.FindProperty("throwBinding"));
+            DrawKeyBinding("右手投掷", serializedObject.FindProperty("throwRightBinding"));
             DrawKeyBinding("打开背包", serializedObject.FindProperty("openInventoryBinding"));
             DrawKeyBinding("交互", serializedObject.FindProperty("interactBinding"));
             // DrawKeyBinding("记事短按", serializedObject.FindProperty("quickPickTapBinding")); // 属性不存在，可能应该使用 pickUpBinding
