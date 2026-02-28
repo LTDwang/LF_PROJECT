@@ -31,6 +31,8 @@ public class PlayerController : MonoBehaviour
     private float stayTime;
     private float stayedTime;//已经僵直了的时间
 
+    private MyPlayerInput playerInput;
+
     private void Awake()
     {
         movementController = GetComponent<MovementController>();
@@ -40,7 +42,7 @@ public class PlayerController : MonoBehaviour
         playerInteraction = GetComponent<PlayerInteraction>();
         inputHandler = GetComponent<InputHandler>();
         playerCha = GetComponent<PlayerCha>();
-
+        playerInput = GetComponent<MyPlayerInput>();
         if (inputHandler == null)
         {
             inputHandler = gameObject.AddComponent<InputHandler>();
@@ -244,6 +246,7 @@ public class PlayerController : MonoBehaviour
             inventoryUI.SetActive(true);
         }
         SetControlLocked(true);
+        playerInput.DisableActionMap();
     }
 
     public void OnCloseInventory()
@@ -254,6 +257,7 @@ public class PlayerController : MonoBehaviour
             inventoryUI.SetActive(false);
         }
         SetControlLocked(false);
+        playerInput.EnableActionMap();
     }
 
     public void OnInteract(InputAction.CallbackContext ctx) 
@@ -339,6 +343,7 @@ public class PlayerController : MonoBehaviour
                 movementController.StopHorizontalMovement();
             }
             inputHandler?.ClearMoveInput();
+            
         }
     }
 

@@ -175,6 +175,18 @@ public class MyPlayerInput : MonoBehaviour
         map?.Dispose();
     }
 
+    public void EnableActionMap()
+    {
+        if (map!=null)
+        {
+            map.Enable();
+        }
+    }
+    public void DisableActionMap()
+    {
+        if (map != null)
+        { map.Disable(); }
+    }
     #region Setup Methods
 
     /// <summary>
@@ -329,7 +341,7 @@ public class MyPlayerInput : MonoBehaviour
     /// <summary>
     /// 设置背包输入
     /// </summary>
-    /*
+    
     private void SetupInventory()
     {
         openInventory = map.AddAction("OpenInventory", InputActionType.Button);
@@ -341,7 +353,7 @@ public class MyPlayerInput : MonoBehaviour
         openInventory.canceled += onInv;
 
         unbindActions.Add(() => openInventory.performed -= onInv);
-    }*/
+    }
 
     /// <summary>
     /// 设置交互输入

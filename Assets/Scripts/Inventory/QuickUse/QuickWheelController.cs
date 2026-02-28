@@ -129,13 +129,13 @@ public class QuickWheelController : MonoBehaviour
         if (item == null) return;
         if (inventoryGrid == null) return;
 
+        if (item.ifConsumeAfterQuickUes)
+        {
+            if (!inventoryGrid.TryConsumeOne(item)) return;
+        }
 
-        if (!inventoryGrid.TryConsumeOne(item)) return;
-
-
-        if (dropSystem != null)
-            dropSystem.Drop(item);
-
+        if (item.fastUseAction==null) return;
+        item.fastUseAction.Excute(FindAnyObjectByType<MyPlayerInput>().gameObject, item);
         if (inventoryGridView != null)
             inventoryGridView.RefreshAllItems();
     }

@@ -10,15 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 56a9536a57fab114fa2507e698fa804b, type: 3}
-  m_Name: testWeapon
+  m_Name: "\u6D4B\u8BD5\u5B50\u5F392"
   m_EditorClassIdentifier: 
-  id: 1
-  displayName: "\u6D4B\u8BD5\u6B66\u5668"
+  id: "\u6D4B\u8BD5\u5B50\u5F392"
+  displayName: 
   description: 
-  icon: {fileID: 21300000, guid: 93e44b3c40293f4418d3945cb433ac88, type: 3}
-  itemType: 4
+  icon: {fileID: 21300000, guid: 60fa0749c6fe57e4d80ea979c357cb19, type: 3}
+  itemType: 6
   maxStack: 1
-  gridWidth: 3
+  gridWidth: 1
   gridHeight: 1
   canRotate: 1
   perishable: 0
@@ -37,17 +37,17 @@ MonoBehaviour:
   durabilityCostPerUse: 1
   destroyWhenBroken: 1
   brokenResultItem: {fileID: 0}
-  canBeFastUse: 0
+  canBeFastUse: 1
+  fastUseAction: {fileID: 11400000, guid: c7c744ccb0d51b947a49c41725f47c19, type: 2}
+  ifConsumeAfterQuickUes: 0
   containerWidth: 1
   containerHeight: 1
-  validBullets:
-  - {fileID: 11400000, guid: d3bf3fa0f378e83479e2a0bb26d7af1b, type: 2}
-  - {fileID: 11400000, guid: b9b40ccfcb81a914f8becaaa380dfd8c, type: 2}
-  originalSpeed: 12
-  maxSpeed: 100
-  chargeUpSpeed: 5
-  farAttackAction: {fileID: 11400000, guid: 3d2f0243bef283c48882f4574236223a, type: 2}
-  validWeapon: {fileID: 0}
+  validBullets: []
+  originalSpeed: 0
+  maxSpeed: 0
+  chargeUpSpeed: 0
+  farAttackAction: {fileID: 0}
+  validWeapon: {fileID: 11400000, guid: 5dbcc74cb8e12e14db2cd2d24a691325, type: 2}
   flyingSpeed: 0
   ifDestroy: 0
   lifeTime: 0

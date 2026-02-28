@@ -19,7 +19,7 @@ public class FarAttack : AttackActionSO
         if (prefeb == null)
         {
             return;
-        }Debug.Log("excute");
+        }
         var go = Instantiate(prefeb, ctx.startpoint.position,Quaternion.identity);
         Bullet _bullet = go.GetComponent<Bullet>();
         if (_bullet!=null)

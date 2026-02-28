@@ -21,7 +21,6 @@ MonoBehaviour:
   gridWidth: 1
   gridHeight: 1
   canRotate: 1
-  canQuickUse: 1
   perishable: 0
   shelfLifeSeconds: 0
   destroyWhenRotten: 1
@@ -38,7 +37,18 @@ MonoBehaviour:
   durabilityCostPerUse: 1
   destroyWhenBroken: 1
   brokenResultItem: {fileID: 0}
+  canBeFastUse: 1
+  fastUseAction: {fileID: 11400000, guid: c7c744ccb0d51b947a49c41725f47c19, type: 2}
+  ifConsumeAfterQuickUes: 0
   containerWidth: 1
   containerHeight: 1
   validBullets: []
+  originalSpeed: 0
+  maxSpeed: 0
+  chargeUpSpeed: 0
+  farAttackAction: {fileID: 0}
   validWeapon: {fileID: 11400000, guid: 5dbcc74cb8e12e14db2cd2d24a691325, type: 2}
+  flyingSpeed: 0
+  ifDestroy: 0
+  lifeTime: 0
+  damage: 0

@@ -38,8 +38,6 @@ public class ItemSO : ScriptableObject
     [Min(1)] public int gridHeight = 1;
     public bool canRotate = true;
 
-    [Header("能否放进快捷栏")]
-    public bool canQuickUse = true;
     // =============== 腐败相关（时间） ===============
     [Header("腐败 / 变质设置")]
     [Tooltip("是否会随时间腐败（例如：生肉、熟食）")]
@@ -77,6 +75,14 @@ public class ItemSO : ScriptableObject
     [Tooltip("若不直接消失，则损坏时变成的物品，例如：破碎工具、废铁")]
     public ItemSO brokenResultItem;
 
+    //=================是否可以放入快捷栏===============
+    [Header("快捷栏相关")]
+    [Tooltip("是否能放入快捷栏")]
+    public bool canBeFastUse;
+    [Tooltip("快捷栏中选中后的操作")]
+    public FastUseActionSO fastUseAction;
+    [Tooltip("快捷栏操作后是否再背包中消耗一个")]
+    public bool ifConsumeAfterQuickUes;
     //================= 若是容器 ===============
     [Header("容器大小（是制作界面的容器）")]
     [Min(1)] public int containerWidth = 1;

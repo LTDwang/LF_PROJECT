@@ -17,7 +17,7 @@ public class QuickWheelSetSlot : MonoBehaviour
         if (controller.IsDraggingToBind())
         {
             var so = controller.inventoryGridView.DraggingItem;
-            if(!so.item.canQuickUse)
+            if(!so.item.canBeFastUse)
             {
                 Debug.Log("这玩意不能快捷使用");
                 return;
