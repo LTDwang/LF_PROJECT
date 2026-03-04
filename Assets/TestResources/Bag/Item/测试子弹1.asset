@@ -15,7 +15,7 @@ MonoBehaviour:
   id: "\u6D4B\u8BD5\u5B50\u5F391"
   displayName: 
   description: 
-  icon: {fileID: 21300000, guid: 588edab47c3f48d40ba60e5a7e1a98ac, type: 3}
+  icon: {fileID: 21300000, guid: 3b1ff10305fe82c428ec6cce635e0f4a, type: 3}
   itemType: 6
   maxStack: 1
   gridWidth: 1

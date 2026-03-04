@@ -158,6 +158,7 @@ public class Equipment : MonoBehaviour
         {
             if (bulletsCount.TryGetValue(item,out int count) && count > 0)
             {
+                Debug.Log(item.id);
                 SetBullet(item);
                 return;
             }
