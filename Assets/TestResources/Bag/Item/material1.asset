@@ -15,13 +15,12 @@ MonoBehaviour:
   id: material1
   displayName: 
   description: 
-  icon: {fileID: 21300000, guid: 7c86b1026977df142a503a4bed0af604, type: 3}
+  icon: {fileID: 21300000, guid: affdb89cbc0bfda4db226b753b45880a, type: 3}
   itemType: 1
   maxStack: 1
   gridWidth: 1
   gridHeight: 1
   canRotate: 1
-  canQuickUse: 0
   perishable: 0
   shelfLifeSeconds: 0
   destroyWhenRotten: 1
@@ -38,7 +37,18 @@ MonoBehaviour:
   durabilityCostPerUse: 1
   destroyWhenBroken: 1
   brokenResultItem: {fileID: 0}
+  canBeFastUse: 0
+  fastUseAction: {fileID: 0}
+  ifConsumeAfterQuickUes: 0
   containerWidth: 1
   containerHeight: 1
   validBullets: []
+  originalSpeed: 0
+  maxSpeed: 0
+  chargeUpSpeed: 0
+  farAttackAction: {fileID: 0}
   validWeapon: {fileID: 0}
+  flyingSpeed: 0
+  ifDestroy: 0
+  lifeTime: 0
+  damage: 0
